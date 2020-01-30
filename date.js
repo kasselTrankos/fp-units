@@ -15,7 +15,8 @@ date.prototype.chain = function(f) {
 }
 
 date.of = function (x) {
-  return new date(new Date(x));
+  const value = x instanceof Date ? new Date(x.getTime()) : new Date(x);
+  return new date(value);
 };
 
 date.prototype.setMinutes = function (m) {

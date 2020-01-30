@@ -7,5 +7,5 @@ const setMinutes = minutes => d => new Date(d.setMinutes(minutes));
 const setHours = hour => d => new Date(d.setHours(hour));
 const setMidnight = compose(setMinutes(0), setHours(0));
 const p = d.map(setMinutes(24)).map(setHours(8));
-const y = f.map(setMidnight)
+const y = p.map(setMidnight)
 console.log(p, 'no es inmutable this is aquestion', '99999999', y);
