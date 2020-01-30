@@ -1,0 +1,15 @@
+{
+  "name": "date",
+  "version": "1.0.0",
+  "description": "",
+  "main": "date.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "daggy": "^1.4.0",
+    "ramda": "^0.26.1"
+  }
+}
