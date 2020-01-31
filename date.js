@@ -7,9 +7,21 @@ date.prototype.equals = function(that) {
 date.prototype.lte = function (that) {
   return this.value.getTime() < that.getTime();
 };
+// Functor :: f => f a ~> (a->b) -> b 
 date.prototype.map = function (f) {
   return date.of(f(this.value));
 };
+
+// Apply :: f => f a ~>f (a->b) -> f b
+date.prototype.ap = function(b) {
+  return date.of(b.map(this.value));
+}
+
+// Semigroup :: a ~> a -> a
+date.prototype.concat = function(b) {
+  return date.of(this.value.getTime() + b.value.getTime());
+}
+
 date.prototype.chain = function(f) {
   return date(this.map(f)).value;
 }
