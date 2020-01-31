@@ -31,13 +31,6 @@ date.of = function (x) {
   return new date(value);
 };
 
-date.prototype.setMinutes = function (m) {
-  return date.of(new Date(this.value).setMinutes(m));
-};
-
-date.prototype.setHours = function (h) {
-  return date.of(new Date(this.value).setHours(h));
-};
 
 const diff = tagged('diff', ['f']);
 diff.prototype.contramap = function(g) {
