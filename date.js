@@ -25,9 +25,10 @@ date.prototype.concat = function(b) {
 date.prototype.chain = function(f) {
   return date(this.map(f)).value;
 }
-
+//pide a gritos el maybe
 date.of = function (x) {
-  const value = x instanceof Date ? new Date(x.getTime()) : x.value ? new Date(x.value) :  new Date(x);
+  const value = x instanceof Date ? new Date(x.getTime()) 
+    : x.value ? new Date(x.value.getTime()) :  new Date(x);
   return new date(value);
 };
 
