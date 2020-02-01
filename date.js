@@ -27,7 +27,7 @@ date.prototype.chain = function(f) {
 }
 
 date.of = function (x) {
-  const value = x instanceof Date ? new Date(x.getTime()) : new Date(x);
+  const value = x instanceof Date ? new Date(x.getTime()) : x.value ? new Date(x.value) :  new Date(x);
   return new date(value);
 };
 
