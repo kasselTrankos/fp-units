@@ -4,10 +4,11 @@ const date = tagged('date', ['value']);
 date.prototype.equals = function(that) {
   return this.value.getTime() === that.getTime();
 };
+//lte :: Ord a => a ~> a -> Boolean 
 date.prototype.lte = function (that) {
   return this.value.getTime() < that.getTime();
 };
-// Functor :: f => f a ~> (a->b) -> b 
+//map:: Functor f => f a ~> (a->b) -> b 
 date.prototype.map = function (f) {
   return date.of(f(this.value));
 };
@@ -25,10 +26,10 @@ date.prototype.concat = function(b) {
 date.prototype.chain = function(f) {
   return date(this.map(f)).value;
 }
-//pide a gritos el maybe
+//prod types is this
 date.of = function (x) {
   const value = x instanceof Date ? new Date(x.getTime()) 
-    : x.value ? new Date(x.value.getTime()) :  new Date(x);
+    : x instanceof date ? new Date(x.value.getTime()) :  new Date(x);
   return new date(value);
 };
 
