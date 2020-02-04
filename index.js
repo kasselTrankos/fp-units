@@ -1,23 +1,33 @@
 const {date: D} = require('./date');
-const {map, compose} = require('ramda');
+const {map, concat, compose} = require('ramda');
 const d = D.of('2020-01-01 19:20');
 const f = D.of('2020-01-03 19:20');
 const m = D.of('2020-02-02 10:10');
+const m1 = D.of('2020-02-20 10:10');
+
+const prop = key => o => o[key];
 const setMinutes = minutes => d => new Date(d.setMinutes(minutes));
 const setHours = hour => d => new Date(d.setHours(hour));
 const setUTCHours = hour => d => new Date(d.setUTCHours(hour));
-const getDay = hour => d => new Date(d.getDay());
-const getDate = hour => d => new Date(d.getDate());
-const getMonday = d =>console.log(d.getDay(), d.getDay() + (d.getDay() ===0 ? 6 : 1)) ||  new Date(d.getDate() - d.getDay() + (d.getDay() ===0 ? 6 : 1));
-
-const day = value => D.of(new Date(value * 24 * 60 * 60 * 1000));
+const daysFromMonday = d => d.getDay() + (d.getDay() ===0 ? 6 : -1);
+const subtract = value => value * -1;
+const milliSeconds = value => value * 24 * 60 * 60 * 1000;
+// Int :: d  => d -> Date morphism 
+const getDay = value => compose(D.of, milliSeconds)(value);
+// Date :: d  => d -> D morphism
+const getMondayDay = d => compose(getDay, subtract, daysFromMonday)(d);
 const s = D.of(new Date(2 *24 * 60 * 60 * 1000))
 /// Date :: d -> d a
-
 const setMidnight = compose(setMinutes(0), setUTCHours(0));
+
 const p = d.map(setMinutes(24)).map(setHours(8));
 const y = p.map(setMidnight);
 const r = y.map(compose(setMinutes(30), setUTCHours(9))).concat(s).concat(s);
-const week = Array.from({length: 7}, (_ , i)=> d.concat(day(i)));
-const monday = m.map(getMonday)
-console.log(p, 'no es inmutable this is aquestion', '99999999', y, s, r, week, monday);
+const monday = m.concat(m.map(getMondayDay));
+const monday1 = m1.concat(m1.map(getMondayDay));
+const _monday_ = m1.concat(getMondayDay(prop('value')(m1)));
+
+const week = Array.from({length: 7}, (_ , i)=> m1.concat(m1.map(getMondayDay)).concat(getDay(i)));
+
+console.log(monday1, '00000', monday, _monday_, week);
+console.log(m.map(getMondayDay))
