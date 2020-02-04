@@ -17,8 +17,10 @@ Observer.prototype.chain = function(f) {
   ));
 }
 
-Observer.prototype.map = function(f) {
+// map :: Functor f => f a ~> (a -> b) -> f b
 
+Observer.prototype.map = function(f) {
+  return Observer(next => this.next(a => next(f(a))))
 }
 
 module.exports = Observer;
