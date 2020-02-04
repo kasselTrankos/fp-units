@@ -10,6 +10,13 @@ Observer.prototype.ap = function(that) {
   return Observer(next => next(that.next(f =>  this.next(a => f(a)))));
 }
 
+// chain :: Chain m => m a ~> ( a -> m b) -> m b
+Observer.prototype.chain = function(f) {
+  return Observer(next => this.next(
+    a => f(a).next(next)
+  ));
+}
+
 Observer.prototype.map = function(f) {
 
 }

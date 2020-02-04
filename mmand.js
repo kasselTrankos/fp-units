@@ -1,10 +1,12 @@
 const Observer = require('./monad');
 
 const init = str => Observer(next => next(str));
-const other = Observer(next =>  next(a => a + '004089545'))
-const start = init('alvarp')
+const toUpperCase = str => str.toUpperCase();
+const other = Observer(next =>  next(toUpperCase));
+const third = str => Observer(next => next(str+ ' add text algf'));
+const start = init('start')
 start
   .ap(other)
-  .next(c => console.log(' asodjpasdu jsald', c))
-
-console.log(start)
+  .chain(third)
+  .ap(other)
+  .next(console.log)
