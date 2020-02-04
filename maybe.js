@@ -4,12 +4,22 @@ const Maybe = taggedSum('Maybe', {
     Just: ['x']
 });
 
+// chain :: Chain m => m a ~> (a -> m b) -> m b
 Maybe.prototype.chain = function(f) {
   return this.cata({
     Just: f,
-    Nothing: () => Maybe.Nothing
+    Nothing: () => this
   });
 }
+
+// ap :: Apply f => f a ~> f (a -> b) -> f b
+Maybe.prototype.ap = function(that) {
+  return this.cata({
+    Nothing: Maybe.Nothing,
+    Just: x => Maybe.Just(that.x(x))
+  });
+}
+
 
 // map:: Functor f => f a ~>(a -> b) -> b 
 Maybe.prototype.map = function (f) {

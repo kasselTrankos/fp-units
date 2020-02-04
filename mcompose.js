@@ -14,7 +14,7 @@ MCompose.of = function(f) {
   return new MCompose(f)
 }
 function Identity (x) {
-  this.value = x;
+  this.x = x;
 }
 
 // of :: Applicative f => a -> f a
@@ -24,17 +24,17 @@ Identity.of = function (x) {
 
 // map :: Functor f => f a ~> (a -> b)-> f b
 Identity.prototype.map = function(f) {
-  return new Identity(f(this.value));
+  return new Identity(f(this.x));
 }
 
 // ap :: Apply f => f a ~> f (a->b) -> f b 
 Identity.prototype.ap = function(b) {
-  return new Identity(b.value(this.value))
+  return new Identity(b.x(this.x))
 }
 
 // chain :: Chain m => m a ~> (a  -> m b ) -> m b
 Identity.prototype.chain = function(f) {
-  return new Identity(f(this.value)).value;
+  return new Identity(f(this.x)).x;
 }
 
 
