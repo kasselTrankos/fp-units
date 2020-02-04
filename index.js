@@ -22,9 +22,9 @@ const setMidnight = compose(setMinutes(0), setUTCHours(0));
 
 const p = d.map(setMinutes(24)).map(setHours(8));
 const y = p.map(setMidnight);
-const r = y.map(compose(setMinutes(30), setUTCHours(9))).concat(s).concat(s);
+const r = y.map(compose(setMinutes(11), setUTCHours(9))).concat(s).concat(s);
 const monday = m.concat(m.map(getMondayDay));
-const monday1 = m1.concat(m1.map(getMondayDay));
+const monday1 = m1.map(setMinutes(11)).map(setHours(8)).concat(m1.map(getMondayDay));
 const _monday_ = m1.concat(getMondayDay(prop('value')(m1)));
 
 const week = Array.from({length: 7}, (_ , i)=> m1.concat(m1.map(getMondayDay)).concat(getDay(i)));
