@@ -1,8 +1,10 @@
 const {tagged} = require ('daggy');
 
 const Observer = tagged('Preloader', ['next']);
+
+// of :: Aplicative f => f ~> a -> f a
 Observer.of = function(x) {
-  return Obserxer(next => next(x));
+  return Observer(next => next(x));
 }
 
 // ap :: Apply f => f a ~> f( a -> b) -> f b
