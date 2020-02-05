@@ -5,12 +5,12 @@ const {Identity} = require('./mcompose');
 const input = process.stdin;
 const io = Monad(next => input.on('data', next));
 const toUpperCase = str => str.toUpperCase();
-const other = Monad(next =>  next(toUpperCase));
 io
   .map(x=> x.toString())
-  .ap(Monad(next => next(x => x.toUpperCase())))
+  .ap(Monad(next => next(toUpperCase)))
   .chain(s => Monad(next => next (s.replace(/\n/, ''))))
   .map(s => `${s} no hay nueva linea`)
+  .map(s => s.split(' '))
   .next(console.log);
 
 // standard_input.on('data', function (data) {
