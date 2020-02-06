@@ -22,7 +22,9 @@ const obtainName = question => new Task((_, resolve)=> {
 const LiftM2 = (f, a, b)=> {} 
 
 obtainName('preguntame el ID: ')
+  // .map(x => x.split(' '))
   .chain(geUserById)
+  // .chain(tranverse('body.company.name'))
   .chain(prop('body'))
   .chain(prop('company'))
   .chain(prop('name'))
