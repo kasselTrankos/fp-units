@@ -3,7 +3,7 @@ const Task = require('./task');
 const request = require('request');
 const {Left, Rigth} = require('./either');
 
-const prop = key => o => key in o ? Task.of(Left(o[key])) : Task.of(Rigth('no data'));
+const prop = key => o => key in o ? Task.of(Left(o[key]).x) : Task.of(Rigth('no data'));
 
 const geUserById = id => new Task((reject, resolve)=> {
   request(
@@ -22,6 +22,6 @@ const LiftM2 = (f, a, b)=> {}
 ioReadLine('preguntame el ID: ')
   .chain(geUserById)
   .chain(prop('body'))
-  .chain(({x})=> prop('name')(x))
+  .chain(prop('name'))
   
   .fork(console.log, console.log);

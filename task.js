@@ -7,7 +7,8 @@ function Task(computation, complete) {
 
 // of :: Applicative f => f a ~> a -> f a
 Task.of = function(x) {
-  return new Task((_, complete)=> complete(x));
+  
+  return new Task((_, resolve) => resolve(x));
 }
 
 // map :: Functor f ~> (a -> b) -> f b
@@ -28,7 +29,13 @@ Task.prototype.chain = function(f) {
 
 // app :: Apply f => f a ~> f(a->b) -> f b
 Task.prototype.ap = function(b) {
-
+  console.log(b, '000000');
+  return new Task((reject, resolve) => {
+    b.fork(a=> reject(a), f => console.log(f('w')) ||  this.fork(
+      reject, 
+      x => resolve(f(x)))),
+    this.cleanup
+  });
 }
 
 module.exports = Task;
