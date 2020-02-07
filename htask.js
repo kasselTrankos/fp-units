@@ -4,7 +4,9 @@ const request = require('request');
 const {Left, Rigth} = require('./either');
 const I = x => x;
 
-const prop = key => o => key in o ? Task.of(Left(o[key]).chain(I)) : Task.of(Rigth('no data').chain(I));
+const prop = key => o => key in o
+  ? Task.of(Left(o[key]).chain(I))
+  : Task.of(Rigth('no data').chain(I));
 
 const geUserById = id => new Task((reject, resolve)=> {
   request(

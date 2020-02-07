@@ -1,23 +1,22 @@
 const {taggedSum} = require('daggy');
 const Either = taggedSum('Either', {
-    Rigth: ['x'],
-    Left: ['x']
+  Right: ['x'],
+  Left: ['x']
 });
 
 // chain :: Chain m => m a ~> (a -> m b) -> m b
 Either.prototype.chain = function(f) {
   return this.cata({
-    Left: f,
-    Rigth: () => this
+    Right: f,
+    Left: () => this
   });
 }
 
 // ap :: Apply f => f a ~> f (a -> b) -> f b
 Either.prototype.ap = function(that) {
-  console.log(that, '0999999')
   return this.cata({
-    Rigth: ()=> this,
-    Left: x => Either.Left(that.x(x))
+    Left: ()=> this,
+    Right: x => Either.Left(that.x(x))
   });
 }
 
@@ -25,8 +24,8 @@ Either.prototype.ap = function(that) {
 // map:: Functor f => f a ~>(a -> b) -> b 
 Either.prototype.map = function (f) {
   return this.cata({
-    Left: x => Either.Left(f(x)),
-    Rigth: () => this
+    Right: x => Either.Left(f(x)),
+    Left: () => this
   });
 }
 
@@ -44,11 +43,9 @@ Either.alt = Either.prototype.alt;
 
 Either.prototype.of = function(x) {
   return this.cata({
-      Left: _ => this,
-      Rigth: () => x
+    Right: _ => this,
+    Left: () => x
   });
 }
-
-Either.of = Either.prototype.of;
 
 module.exports = Either;
