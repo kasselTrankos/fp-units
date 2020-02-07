@@ -23,25 +23,33 @@ const eitherToTask = transformToMaybe(Right);
 
 // phase 2, normal transformation to  Task
 const safeProp = x => v => compose(eitherToTask, prop(x))(v);
-const geUserById = id => new Task((reject, resolve)=> {
-  request(
+const geUserById = id => new Task((reject, resolve)=> request(
     `https://jsonplaceholder.typicode.com/users/${id}`, 
     { json: true }, 
     (err, res) => (err) ? reject(err) : resolve(res))
-});
-const obtainName = question => new Task((_, resolve)=> {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout});
-  rl.question(question, (data) => {
+);
+// const query = 
+const ask = question => new Task((_, resolve)=> {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout});
+    rl.question(question, (data) => {
     rl.close();
     resolve(data)
   });
 });
 
-obtainName('your id is : ')
+Task.of(1)
+  .ap(Task.of(x => x +1))
   .chain(geUserById)
   .chain(safeProp('body'))
   .chain(safeProp('name'))
   .fork(console.log, console.log)
+
+// ask('your id is : ')
+//   .ap(Task.of(x => x.split(' ')))
+//   // .chain(geUserById)
+//   // .chain(safeProp('body'))
+//   // .chain(safeProp('name'))
+//   .fork(console.log, console.log)
 
 
 // const add = (x, y) => x + y;
