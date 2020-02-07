@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "daggy": "^1.4.0",
-    "ramda": "^0.26.1"
+    "data.maybe": "^1.2.3",
+    "ramda": "^0.26.1",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "lerna": "^3.20.2"

@@ -14,8 +14,9 @@ Maybe.prototype.chain = function(f) {
 
 // ap :: Apply f => f a ~> f (a -> b) -> f b
 Maybe.prototype.ap = function(that) {
+  console.log(that, '0999999')
   return this.cata({
-    Nothing: Maybe.Nothing,
+    Nothing: ()=> this,
     Just: x => Maybe.Just(that.x(x))
   });
 }
@@ -25,7 +26,7 @@ Maybe.prototype.ap = function(that) {
 Maybe.prototype.map = function (f) {
   return this.cata({
     Just: x => Maybe.Just(f(x)),
-    Nothing: () => Maybe.Nothing
+    Nothing: () => this
   });
 }
 
