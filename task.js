@@ -93,6 +93,12 @@ Task.prototype.ap = function(that) {
   const _thatFork = that.fork;
   let fn, fLoaded = false;
   let v, vLoaded = false;
+  var cleanupThis = this.cleanup;
+  var cleanupThat = that.cleanup;
+  function cleanupBoth(state) {
+    cleanupThis(state[0]);
+    cleanupThat(state[1]);
+  }
   // console.log('00000', that, _thatFork);
   return new Task((reject, resolve) => {
     /////mmmm
@@ -100,20 +106,20 @@ Task.prototype.ap = function(that) {
       return o => {
         setter(o);
         if(fLoaded && vLoaded) {
-          console.log(fLoaded, '&&', vLoaded, fn)
+          delayed(function(){ cleanupBoth(allState) });
           return resolve(fn(v));
+        }else {
+          return o;
         }
       }
     }
     const _this = _thisFork(x => reject(x), guard(x => {
-      console.log('megan', x);
       vLoaded = true;
       v = x;
     }));
-    const _that = _thatFork(x=> reject(x), guard(f => {
-      console.log('ryan', f);
+    const _that = _thatFork(x=> reject(x), guard(x => {
       fLoaded = true;
-      fn = f;
+      fn = x;      
     }));
     
     // var thisState = forkThis(guardReject, guardResolve(function(x) {
