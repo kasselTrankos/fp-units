@@ -1,4 +1,3 @@
-const {tagged} = require( 'daggy');
 var delayed = typeof setImmediate !== 'undefined'?  setImmediate
             : typeof process !== 'undefined'?       process.nextTick
             : /* otherwise */                       setTimeout
@@ -9,7 +8,6 @@ function Task(computation, complete) {
 
 // of :: Applicative f => f a ~> a -> f a
 Task.of = function(x) {
-  
   return new Task((_, resolve) => resolve(x));
 }
 
@@ -37,100 +35,44 @@ Task.prototype.chain = function(f) {
 
 // app :: Apply f => f a ~> f(a->b) -> f b
 Task.prototype.ap = function(that) {
-  // var forkThis = this.fork;
-  // var forkThat = that.fork;
-  // var cleanupThis = this.cleanup;
-  // var cleanupThat = that.cleanup;
-
-  // function cleanupBoth(state) {
-  //   cleanupThis(state[0]);
-  //   cleanupThat(state[1]);
-  // }
-
-  // return new Task(function(reject, resolve) {
-  //   var func, funcLoaded = false;
-  //   var val, valLoaded = false;
-  //   var rejected = false;
-  //   var allState;
-
-  //   var thisState = forkThis(guardReject, guardResolve(function(x) {
-  //     funcLoaded = true;
-  //     func = x;
-  //   }));
-
-  //   var thatState = forkThat(guardReject, guardResolve(function(x) {
-  //     valLoaded = true;
-  //     val = x;
-  //   }));
-
-  //   function guardResolve(setter) {
-  //     return function(x) {
-  //       if (rejected) {
-  //         return;
-  //       }
-
-  //       setter(x);
-  //       if (funcLoaded && valLoaded) {
-  //         console.log(funcLoaded, '0000000', valLoaded);
-  //         delayed(function(){ cleanupBoth(allState) });
-  //         return resolve(func(val));
-  //       } else {
-  //         return x;
-  //       }
-  //     }
-  //   }
-
-  //   function guardReject(x) {
-  //     if (!rejected) {
-  //       rejected = true;
-  //       return reject(x);
-  //     }
-  //   }
-
-  //   return allState = [thisState, thatState];
-  // }, cleanupBoth);
   const _thisFork = this.fork;
   const _thatFork = that.fork;
   let fn, fLoaded = false;
   let v, vLoaded = false;
-  var cleanupThis = this.cleanup;
-  var cleanupThat = that.cleanup;
+  let cleanupThis = this.cleanup;
+  let cleanupThat = that.cleanup;
+  let rejected = false;
   function cleanupBoth(state) {
     cleanupThis(state[0]);
     cleanupThat(state[1]);
   }
-  // console.log('00000', that, _thatFork);
   return new Task((reject, resolve) => {
-    /////mmmm
+    const guardReject = x => {
+      if (!rejected) {
+        rejected = true;
+        return reject(x);
+      }
+    }
     const guard = setter => {
-      return o => {
-        setter(o);
+      return x => {
+        setter(x);
         if(fLoaded && vLoaded) {
           delayed(function(){ cleanupBoth(allState) });
           return resolve(fn(v));
         }else {
-          return o;
+          return x;
         }
       }
     }
-    const _this = _thisFork(x => reject(x), guard(x => {
+    const _this = _thisFork(guardReject, guard(x => {
       vLoaded = true;
       v = x;
     }));
-    const _that = _thatFork(x=> reject(x), guard(x => {
+    const _that = _thatFork(guardReject, guard(x => {
       fLoaded = true;
       fn = x;      
     }));
     
-    // var thisState = forkThis(guardReject, guardResolve(function(x) {
-    //     funcLoaded = true;
-    //     func = x;
-    //   }));
-    // that.fork(a=> reject(a), f => this.fork(
-    // reject, 
-    // x => {
-    //   return  resolve(f(x))
-    // })) , this.cleanup 
     return allState = [_this, _that];
   }, this.cleanup);
 }
