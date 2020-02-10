@@ -27,4 +27,9 @@ Identity.prototype.chain = function(that) {
   return that(this.x);
 }
 
+// reduce :: Foldable f => f a ~> ((b, a) -> b, b) -> b
+Identity.prototype.reduce = function (f, acc) {
+  return new Identity(f(acc, this.x))
+} 
+
 module.exports = Identity;
