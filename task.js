@@ -29,7 +29,6 @@ Task.prototype.chain = function(f) {
 
 // app :: Apply f => f a ~> f(a->b) -> f b
 Task.prototype.ap = function(b) {
-  console.log(b, '000000');
   return new Task((reject, resolve) => {
     b.fork(a=> reject(a), f => console.log(f('w')) ||  this.fork(
       reject, 

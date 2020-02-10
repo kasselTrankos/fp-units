@@ -1,5 +1,3 @@
-const {tagged} = require( 'daggy');
-
 // const Identity = tagged('Identity', ['x'])
 function Identity(x) {
   this.x = x;
@@ -20,9 +18,9 @@ Identity.prototype.map = function(f){
 // si lo reemplazo m por una f(Function)
 //tenemos a -> f(b) -> f(b)
 // luego [T [a]] -> T [a] 
-Identity.prototype.chain = function(m) {
-  console.log('M-> ', m)
-  return Identity.of(m.x(this.x));
+Identity.prototype.chain = function(that) {
+  console.log(this.x, that);
+  return Identity.of(that.x(this.x));
 }
 
 module.exports = Identity;

@@ -15,7 +15,7 @@ Observer.prototype.ap = function(that) {
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
 Observer.prototype.chain = function(f) {
   return Observer(next => this.next(
-    a => f(a).next(next)
+    a => console.log('f', f, 'a', a, 'f a', f(a).next(console.log)) ||f(a).next(next)
   ));
 }
 
