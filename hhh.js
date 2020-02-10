@@ -20,9 +20,9 @@ const eitherToTask = x => new Task((reject, resolve)=> {
 
 
 console.log(new Date());
-liftM(x => y => c => b => [x, y, c, b, x],
-       
-       TT(2000),TT(3000), TT(4000)).chain(x => TT(1000),).fork(
+liftM(x => y => z => [x, y, z],
+  TT(2000),TT(1000), TT(1000))
+  .fork(
   (error) => { console.log('something went wrong') },
   (value) => { console.log(`The value is ${value} ${new Date()}`) }
 );

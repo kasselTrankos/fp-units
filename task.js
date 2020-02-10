@@ -27,11 +27,6 @@ Task.prototype.chain = function(f) {
   });
 } 
 
-// ----- Applicative (Task a)
-// ap(f) {
-//   return this.chain(fn => f.map(fn));
-// }
-
 
 // app :: Apply f => f a ~> f(a->b) -> f b
 Task.prototype.ap = function(that) {
