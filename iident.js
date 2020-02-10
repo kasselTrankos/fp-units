@@ -15,7 +15,7 @@ const x = [1,3,4,5];
 const y = [90, 75, 89, [89, 90]];
 
 // creando esta derivacion tal y como dice Fantasy-land
-// const r1 = deriv.map(plus100);
-// const dR = deriv.chain(Identity.of(plus100));
+const r1 = deriv.map(plus100);
+const dR = deriv.chain(x => Identity.of(plus100));
 
 console.log(r1, '00000', dR, y.map(I))
