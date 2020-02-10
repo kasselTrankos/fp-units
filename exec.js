@@ -13,14 +13,14 @@ const LiftM2 = (f, a, b) => a.ap(b.map(f));
 
 LiftM2(multiply, a, b).next(console.log)
 
-
-io
-  .map(x=> x.toString())
-  .ap(Monad(next => next(toUpperCase)))
-  .chain(s => Monad(next => next (s.replace(/\n/, ''))))
-  .map(s => `${s} no hay nueva linea`)
-  .ap(Monad(next => next(s => s.split(' '))))
-  .next(console.log);
+// using of I/O terminal
+// io
+//   .map(x=> x.toString())
+//   .ap(Monad(next => next(toUpperCase)))
+//   .chain(s => Monad(next => next (s.replace(/\n/, ''))))
+//   .map(s => `${s} no hay nueva linea`)
+//   .ap(Monad(next => next(s => s.split(' '))))
+//   .next(console.log);
 
 
   // f a ~> f (a -> b) -> f b
@@ -28,13 +28,13 @@ io
   const two = Monad.of([12])
   const f = Monad.of()
   const add = x => y => x + y;
-  one.ap(add).ap(two);
+  const flat = x => y => x.map(v => y.map(g => v +g));
 
   const liftA2 = (f, a, b) => b.ap(a.map(f))
 
   
-  liftA2(x => y => x.map(v => y.map(g => v +g)), two, one)
-  .next(console.log)
+  liftA2(add, two, one)
+    .next(console.log)
 // standard_input.on('data', function (data) {
 
 //   // User input exit.
