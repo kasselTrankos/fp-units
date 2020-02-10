@@ -24,20 +24,28 @@ const geUserById = id => Monad(next => {
     (err, res) =>  next(err || res.body.name))
 });
 
-Monad.of([1,234]).chain(t1).next(console.log)
-//Monad.of(1)
-//.chain(geUserById).next(console.log)
-//.chain(geUserById).next(console.log)
-
-
+// using of I/O terminal
 // io
 //   .map(x=> x.toString())
 //   .ap(Monad(next => next(toUpperCase)))
 //   .chain(s => Monad(next => next (s.replace(/\n/, ''))))
 //   .map(s => `${s} no hay nueva linea`)
-//   .map(s => s.split(' '))
+//   .ap(Monad(next => next(s => s.split(' '))))
 //   .next(console.log);
 
+
+  // f a ~> f (a -> b) -> f b
+  const one = Monad.of([1,3,34,5])
+  const two = Monad.of([12])
+  const f = Monad.of()
+  const add = x => y => x + y;
+  const flat = x => y => x.map(v => y.map(g => v +g));
+
+  const liftA2 = (f, a, b) => b.ap(a.map(f))
+
+  
+  liftA2(add, two, one)
+    .next(console.log)
 // standard_input.on('data', function (data) {
 
 //   // User input exit.

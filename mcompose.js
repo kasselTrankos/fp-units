@@ -29,7 +29,7 @@ Identity.prototype.map = function(f) {
 
 // ap :: Apply f => f a ~> f (a->b) -> f b 
 Identity.prototype.ap = function(b) {
-  return new Identity(b.x(this.x))
+  return b.map(this.x);
 }
 
 // chain :: Chain m => m a ~> (a  -> m b ) -> m b
