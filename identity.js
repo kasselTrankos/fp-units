@@ -19,7 +19,7 @@ Identity.prototype.map = function(f){
 //tenemos a -> f(b) -> f(b)
 // luego [T [a]] -> T [a] 
 Identity.prototype.chain = function(that) {
-  return Identity.of(that(this.x));
+  return that(this.x);
 }
 
 module.exports = Identity;

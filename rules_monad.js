@@ -11,4 +11,13 @@ const x = 4;
 Monad.of(x).chain(fn)
 .next(console.log)
 fn(x).next(console.log)
-console.log(ID.of(x).chain(fn1), fn1(x));
+console.log(ID.of(x).chain(fn1), '=====', fn1(x));
+
+// rule 2
+// m['fantasy-land/chain'](M['fantasy-land/of']) is equivalent to m (right identity)
+// 4 === 4
+Monad.of(x).chain(Monad.of).next(console.log);
+console.log('=====')
+Monad.of(x).next(console.log)
+
+console.log(ID.of(4).chain(ID.of), '=====', ID.of(4), )
