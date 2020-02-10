@@ -14,7 +14,8 @@
     "data.task": "^3.1.2",
     "folktale": "^2.3.2",
     "ramda": "^0.26.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "rxjs": "^6.5.4"
   },
   "devDependencies": {
     "lerna": "^3.20.2"
