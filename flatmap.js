@@ -14,6 +14,6 @@ const l = liftM(x => ID.of(x.chain(x=> x)), y);
 // fl.map(x=> x.map(y => console.log(y)))
 // liftM(x=> x.map(x => console.log('xxxx', x)), fl)
 // fl.map(x=> x.map(v=> console.log(v)));
-const r = ID.of(900).reduce((acc, x)=> acc + x + 1, 109)
+const r = ID.of(900).reduce((acc, x)=> acc + x + 1, 11409)
 console.log(r)
 

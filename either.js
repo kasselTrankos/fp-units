@@ -16,7 +16,7 @@ Either.prototype.chain = function(f) {
 Either.prototype.ap = function(that) {
   return this.cata({
     Left: ()=> this,
-    Right: x => Either.Left(that.x(x))
+    Right: x => that.x(x)
   });
 }
 

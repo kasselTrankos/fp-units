@@ -1,27 +1,45 @@
 const readline = require('readline');
 const Task = require('./task');
 const request = require('request');
-const {Left, Rigth} = require('./either');
+const either = require('./either');
+const {liftM, curry} = require('./utils');
 const I = x => x;
+const {Left, Right} = either;
 
-const curryN = (n, f) => {
-  return function curried (...args) {
-    return args.length >= n ? f(...args) : (...rest) => curried(...args, ...rest)
+const prop = curry((key, o) => o[key]);
+const safeProp =  x => x ? Right(x) : Left('NO A PROP');
+const map = curry((f, xs) => xs.map(f) )
+const chain = curry((f, xs) => xs.chain(f) )
+const pipe = (...fns) => v => fns.reduce((x, f) => f(x), v)
+// Either -> Task
+// eiterToTask :: (a -> Either e b) -> a -> Task e b
+const eiterToTask = f => {
+  return (...args) => {
+    console.log(f(...args), '00000000');
+    return new Task((reject, resolve) => {
+      return f(...args).cata({
+        Right: resolve,
+        Left: reject
+      })
+    })
   }
 }
+const eitherToTask = x => new Task((reject, resolve)=> {
+  console.log(either.prototype.cata)
+  return either.prototype.cata({
+    Right: resolve(x),
+    Left: reject('error')
+  });
+})
 
-const curry = (f) => curryN(f.length, f)
 
-const prop = curry((key, o) => o[key]) 
 
 const safe = f => curryN(f.length, (...args) => {
   const result = f(...args)
   return result === undefined ? Left('No data') : Rigth(result)
 })
 
-const safeProp = safe(prop)
-
-const geUserById = id => new Task((reject, resolve)=> {
+const geUserById = id => new Task((reject, resolve) => {
   request(
     `https://jsonplaceholder.typicode.com/users/${id}`, 
     { json: true }, 
@@ -34,20 +52,23 @@ const obtainName = question => new Task((_, resolve)=> {
     resolve(data)
   });
 });
-const LiftM2 = (f, a, b)=> {} 
 
-obtainName('preguntame el ID: ')
-  // .map(x => x.split(' '))
-  .chain(geUserById)
-  // .chain(tranverse('body.company.name'))
-  .chain(prop('body'))
-  .chain(prop('company'))
-  .chain(prop('name'))
-//  .fork(console.log, console.log);
+const getProperty = key => o => Task.of(prop(key)(o))
+
+// obtainName('preguntame el ID: ')
+//   // .map(x => x.split(' '))
+//   .chain(geUserById)
+//   // .chain(tranverse('body.company.name'))
+//   .chain(getProperty('body'))
+//   .chain(getProperty('company'))
+//   .chain(getProperty('name'))
+//   // .chain(prop('company'))
+//   // .chain(prop('name'))
+// .fork(console.log, console.log);
 
 
-Task.of((Task.of(Left(1))))
-.chain(I)
+// Task.of((Task.of(Left(1))))
+// .chain(I)
 //.fork(console.log, console.log)
 
 
@@ -56,36 +77,35 @@ const log = curry((tag, data) => console.log(tag, data))
 const getData = () => Task.of({ _a: 1})
 
 
-// Either -> Task
-// eiterToTask :: (a -> Either e b) -> a -> Task e b
-const eiterToTask = (f) => {
-  return (...args) => {
-    return new Task((reject, resolve) => {
-      return f(...args).cata({
-        Rigth: resolve,
-        Left: reject
-      })
-    })
-  }
-}
-
-const map = curry((f, xs) => xs.map(f) )
-const chain = curry((f, xs) => xs.chain(f) )
-const pipe = (...fns) => fns.reduce((f, g) => x => f(g(x)), x => x)
 
 
-const safePropA = ({ a }) => {
-  return a === undefined ? Left('NO A PROP') : Rigth(a)
-}
+
+const program = pipe(
+  obtainName,
+  chain(geUserById),
+  chain(getProperty('body')),
+  chain(getProperty('company')),
+  chain(getProperty('name'))
+);
+eitherToTask(1).fork(log('err; '), log('aci; '))
+// program('preguntame el ID: ').fork(console.log, log('ok: is: '))
+//eiterToTask(safeProp)(prop('a')({a:1})).fork();
+//.fotk(log('error: '), log('ok: '))
+/*
+code class maurice review 
+
+
+
+
 
 const program = pipe(
   getData,
   chain(eiterToTask(safePropA)),
   map(x => x + 1)
 )
+const add = x => y => x + y;
+const addL = liftM(add, program(), program())
 
-const addL = lift(add)
 
-
-addL(program(), program())
-.fork(log('error:'), log('data:'))
+addL.fork(log('error:'), log('data:'))
+*/
