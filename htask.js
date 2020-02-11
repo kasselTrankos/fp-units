@@ -1,16 +1,14 @@
 const readline = require('readline');
 const Task = require('./task');
 const request = require('request');
-const either = require('./either');
-const {liftM, curry} = require('./utils');
+const {Left, Right} = require('./either');
+const {curry, chain, pipe, prop} = require('./utils');
 const I = x => x;
-const {Left, Right} = either;
 
-const prop = curry((key, o) => o[key]);
-const safeProp =  x => x ? Right(x) : Left('NO A PROP');
-const map = curry((f, xs) => xs.map(f) )
-const chain = curry((f, xs) => xs.chain(f) )
-const pipe = (...fns) => v => fns.reduce((x, f) => f(x), v)
+
+const safeProp =  x => x ? Right(x) : Left('NO existe');
+
+
 // Either -> Task
 // eiterToTask :: (a -> Either e b) -> a -> Task e b
 const eitherToTask = f => {
@@ -23,13 +21,6 @@ const eitherToTask = f => {
     })
   }
 }
-
-
-
-const safe = f => curryN(f.length, (...args) => {
-  const result = f(...args)
-  return result === undefined ? Left('No data') : Rigth(result)
-})
 
 const geUserById = id => new Task((reject, resolve) => {
   request(
@@ -44,7 +35,8 @@ const obtainName = question => new Task((_, resolve)=> {
     resolve(data)
   });
 });
-
+/// reading this seems a reduce will be next work
+// String -> Object -> Task e Right
 const getProperty = key => o => eitherToTask(safeProp)(prop(key)(o))
 
 
