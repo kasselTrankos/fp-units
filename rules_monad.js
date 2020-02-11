@@ -19,5 +19,4 @@ console.log(ID.of(x).chain(fn1), '=====', fn1(x));
 Monad.of(x).chain(Monad.of).next(console.log);
 console.log('=====')
 Monad.of(x).next(console.log)
-
-console.log(ID.of(4).chain(ID.of), '=====', ID.of(4), )
+console.log(ID.of(4).chain(ID.of), '=====', ID.of(4))
