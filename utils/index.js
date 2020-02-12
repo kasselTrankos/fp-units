@@ -12,6 +12,7 @@ const curryN = (n, f) => {
 const curry = (f) => curryN(f.length, f);
 const map = curry((f, xs) => xs.map(f));
 const chain = curry((f, xs) => xs.chain(f));
+const ap = curry((f, xs) => xs.ap(f));
 const pipe = (...fns) => v => fns.reduce((x, f) => f(x), v);
 const prop = curry((key, o) => o[key]);
 
@@ -41,4 +42,4 @@ const getProperty = key => o => eitherToTask(safeProp)(prop(key)(o));
 const log = curry((msg, val)=> console.log(msg, val))
 
 module.exports = {liftM, curry, map, chain, pipe, 
-  prop, getProperty, safeProp, log}
+  prop, getProperty, safeProp, log, ap}
