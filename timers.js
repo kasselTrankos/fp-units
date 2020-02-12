@@ -1,18 +1,18 @@
 const {getUserById} = require('./lib');
 const Task = require('./task');
 const request = require('request');
-const Monad  = require('./monad');
+const Monad  = require('./fp/stream');
 const {log, pipe, liftM, chain, map, prop} = require('./utils');
 const { flatMap} = require('rxjs/operators');
 
 
 const append = x => xs => [... xs, x];
 const rusers = [1, 2, 3, 6];
-const ApiBreakInBad= id => new Monad((next)=> {
+const ApiBreakInBad= id => new Monad((next, complete)=> {
   request(
     `http://localhost:3000/posts/${id}`, 
     { json: true }, 
-    (err, res, body) => next(body || err))
+    (err, res, body) => err ? complete(err) : next(body))
   
 });
 
@@ -21,7 +21,7 @@ const ApiBreakInBad= id => new Monad((next)=> {
 const insideOut = (T, xs) => xs.reduce(
     (acc, x) => liftM(append, x, acc), T.of([]));
 
-const interval = times => insideOut(Monad, times.map(time => new Monad(next => {
+const interval = times => insideOut(Monad, times.map(time => new Monad((next, complete) => {
   setTimeout(()=> {console.log(time, 'addd ');  next(time)}, time);
 })));
 
