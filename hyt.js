@@ -20,18 +20,29 @@ const ApiBreakInBad= id => new Monad((next)=> {
 // insideOut :: Applicative f  => [f a] -> f [a]
 const insideOut = (T, xs) => xs.reduce(
     (acc, x) => liftM(append, x, acc), T.of([]));
-const interval = time => console.log(time, '0000000') || new Monad(next => {
-  setTimeout(()=> { next(time)}, time);
-}); 
 
+const interval = times => insideOut(Monad, times.map(time => new Monad(next => {
+  setTimeout(()=> {console.log(time, 'addd ');  next(time)}, time);
+})));
 
-ApiBreakInBad(1)
-  .map(x=> x.delay)
-  .chain(interval)
-  .next(log('eeee: '))
 // paralleliseTaskArray :: [Int] -> Task e [User]
-// const getUsers = users =>
-//   insideOut(Task, users.map(ApiBreakInBad));
+const getUsers = users =>
+  insideOut(Monad, users.map(ApiBreakInBad));
+
+const program = pipe(
+  getUsers,
+  map(map(prop('delay'))),
+  chain(interval)
+);
+program(rusers)
+  .next(log('get: '))
+// merge googd
+// ApiBreakInBad(1)
+//   .map(x=> x.delay)
+//   .chain(interval)
+//   .next(log('eeee: '))
+
+
 // const program = pipe(
 //   getUsers,
 //   map(map(prop('delay'))),
