@@ -1,26 +1,12 @@
 const readline = require('readline');
 const Task = require('./task');
 const request = require('request');
-const {Left, Right} = require('./either');
-const {curry, chain, pipe, prop} = require('./utils');
+
+const {curry, chain, pipe, getProperty} = require('./utils');
 const I = x => x;
 
 
-const safeProp =  x => x ? Right(x) : Left('NO existe');
 
-
-// Either -> Task
-// eiterToTask :: (a -> Either e b) -> a -> Task e b
-const eitherToTask = f => {
-  return (...args) => {
-    return new Task((reject, resolve) => {
-      return f(...args).cata({
-        Right: resolve,
-        Left: reject
-      })
-    })
-  }
-}
 
 const geUserById = id => new Task((reject, resolve) => {
   request(
@@ -35,9 +21,7 @@ const obtainName = question => new Task((_, resolve)=> {
     resolve(data)
   });
 });
-/// reading this seems a reduce will be next work
-// String -> Object -> Task e Right
-const getProperty = key => o => eitherToTask(safeProp)(prop(key)(o))
+
 
 
 
