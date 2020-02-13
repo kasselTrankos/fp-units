@@ -1,0 +1,14 @@
+{
+  "posts": [
+    { "id": 1, "title": "json-server", "author": "alvaro", "delay": 4000 },
+    { "id": 2, "title": "json-server", "author": "Ramon", "delay": 5000 },
+    { "id": 3, "title": "json-server", "author": "paddington", "delay": 1300 },
+    { "id": 4, "title": "json-server", "author": "vera", "delay": 1400 },
+    { "id": 5, "title": "json-server", "author": "mary", "delay": 2300 },
+    { "id": 6, "title": "json-server", "author": "alaam", "delay": 2100 }
+  ],
+  "comments": [
+    { "id": 1, "body": "some comment", "postId": 1 }
+  ],
+  "profile": { "name": "typicode" }
+}
