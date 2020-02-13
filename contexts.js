@@ -11,10 +11,12 @@ const ApiBreakInBad= id => new Stream(({next, complete, error})=> {
 const isError = x => new Stream(({next}) => next(x.toUpperCase()));
 const isComplete = x => new Stream(({next}) => next(x+ '//////'));
 
+const app = new Stream(({next, error})=> next(x=> x['author']))
 const program = ApiBreakInBad(1);
 
 program
-  .map(x=> x['author'])
+  .ap(app)
+  .map(x=> x + ' abdsf')
   .chain(isError)
   .chain(isComplete)
   .map(x => x+ '00000')

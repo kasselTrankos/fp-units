@@ -24,12 +24,10 @@ Stream.of = function(x) {
   return new Stream((next) => next(x));
 }
 
-// ap :: Apply f => f a ~> f( a -> b) -> f b
+// ap :: Apply f => f a ~> f(a -> b) -> f b
+/// using a derivation of ap using m => m.chain(f => this.map(f))
 Stream.prototype.ap = function(that) {
-  return Stream(
-    ({next, complete, error}) => {that.next(f => this.next(a => next(f(a)))),
-    this.complete}
-  );
+  return that.chain(f => this.map(f));
 }
 
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
@@ -42,7 +40,7 @@ Stream.prototype.chain = function(m) {
     }),
     complete: () => handler.complete(), // void, by definition you no must do nothing at this point
     error: e => handler.error(e)
-  }))
+  }));
 }
 
 // map :: Functor f => f a ~> (a -> b) -> f b
@@ -50,8 +48,8 @@ Stream.prototype.map = function(f) {
   return new Stream( handler => run.call(this, {
     next: x => handler.next(f(x)),
     complete: () => handler.complete(), // void, by definition you no must do nothing at this point
-    error: x =>  handler.error(x) //void
-  }))
+    error: x =>  handler.error(x) //
+  }));
 }
 
 module.exports = Stream;
