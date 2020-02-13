@@ -8,8 +8,8 @@ const ApiBreakInBad= id => new Stream(({next, complete, error})=> {
     (err, res, body) => err ? complete(err) : next(body))
 });
 
-const isError = x => new Stream(({error, complete, next}) => next(x.toUpperCase()));
-const isComplete = x => new Stream(({error, complete, next}) => next(x+ '//////'));
+const isError = x => new Stream(({next}) => next(x.toUpperCase()));
+const isComplete = x => new Stream(({next}) => next(x+ '//////'));
 
 const program = ApiBreakInBad(1);
 
@@ -20,6 +20,6 @@ program
   .map(x => x+ '00000')
   .subscribe({
   next: a => console.log('next--->', a),
-  complete: ()=>  console.log('complete'),
-  error: e=> console.log(e, '<----errror')
+  complete: () =>  console.log('complete'),
+  error: e => console.log(e, '<----errror')
 });
