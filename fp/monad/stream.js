@@ -11,7 +11,7 @@ function run ({next, complete, error}) {
   this._constructor({
     next: next || noop,
     complete: complete || noop,
-    error: error || complete
+    error: error || noop
   });
 } 
 
@@ -33,11 +33,16 @@ Stream.prototype.ap = function(that) {
 }
 
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
-Stream.prototype.chain = function(f) {
-  return Stream(next => this.next(
-    a => f(a).next(next),
-    this.complete
-  ));
+Stream.prototype.chain = function(m) {
+  return new Stream(handler => run.call(this, {
+    next: x => m(x)._constructor({
+      next: handler.next, 
+      error: handler.error,
+      complete: handler.complete
+    }),
+    complete: () => handler.complete(), // void, by definition you no must do nothing at this point
+    error: e => handler.error(e)
+  }))
 }
 
 // map :: Functor f => f a ~> (a -> b) -> f b
