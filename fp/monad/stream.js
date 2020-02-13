@@ -1,13 +1,9 @@
-// const {tagged} = require ('daggy');
-
-// const Stream = tagged('Stream', ['next', 'complete']);
-
+const noop = () => {};
 function Stream(constrctor) {
   this._constructor = constrctor;
 }
 
 function run ({next, complete, error}) {
-  const noop = () => {};
   this._constructor({
     next: next || noop,
     complete: complete || noop,
@@ -21,7 +17,7 @@ Stream.prototype.subscribe = function(o) {
 
 // of :: Aplicative f => f ~> a -> f a
 Stream.of = function(x) {
-  return new Stream((next) => next(x));
+  return new Stream(({next}) => next(x));
 }
 
 // ap :: Apply f => f a ~> f(a -> b) -> f b
@@ -34,7 +30,7 @@ Stream.prototype.ap = function(that) {
 Stream.prototype.chain = function(m) {
   return new Stream(handler => run.call(this, {
     next: x => m(x)._constructor({
-      next: handler.next, 
+      next: x => handler.next(x), 
       error: handler.error,
       complete: handler.complete
     }),

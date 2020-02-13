@@ -2,7 +2,7 @@ const {Left, Right} = require('./../monad/either');
 const {Task} = require('./../monad');
 const liftM = (f, ...args)=> {
   const [head, ...tail] = args;
-  return tail.reduce((acc, curr)=> console.log(curr, '12312', acc) || curr.ap(acc), head.map(f))
+  return tail.reduce((acc, curr) => curr.ap(acc), head.map(f))
 };
 const curryN = (n, f) => {
   return function curried (...args) {
