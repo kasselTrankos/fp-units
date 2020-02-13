@@ -14,7 +14,7 @@ const TT = time => new Task((reject, resolve)=> {
 });
 
 const eitherToTask = x => new Task((reject, resolve)=> {
-  x? Right(resolve(x)) : Left(reject('mal mu mal'))
+  x === 1000 ? Right(resolve(x)) : Left(reject('mal mu mal'))
 });
 
 

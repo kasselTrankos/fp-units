@@ -72,5 +72,12 @@ Task.prototype.ap = function(that) {
   }, this.cleanup);
 }
 
+Task.prototype.reduce = function(f, b) {
+  console.log(f, b, '0000000')
+  return new Task((reject, resolve)=> {
+    this.fork(a=> reject(a), a => resolve(f(a, b))),
+    this.cleanup
+  })
+}
 
 module.exports = Task;
