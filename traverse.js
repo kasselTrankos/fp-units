@@ -2,11 +2,6 @@ const List = require('./list');
 const {liftM, getProperty, pipe, map, prop, safeProp, chain} = require('./utils');
 const Task = require('./task');
 const request = require('request');
-const Either = require('./either');
-const {Left, Right} = Either;
-Either.of = function(x) {
-  return x ? Right(x) : Left('no data')
-}
 
 
 const append = x => xs => [... xs, x]
