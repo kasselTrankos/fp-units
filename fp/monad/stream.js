@@ -27,7 +27,7 @@ Stream.of = function(x) {
 // ap :: Apply f => f a ~> f( a -> b) -> f b
 Stream.prototype.ap = function(that) {
   return Stream(
-    (next, complete) => {that.next(f => this.next(a => next(f(a)))),
+    ({next, complete, error}) => {that.next(f => this.next(a => next(f(a)))),
     this.complete}
   );
 }
@@ -42,10 +42,11 @@ Stream.prototype.chain = function(f) {
 
 // map :: Functor f => f a ~> (a -> b) -> f b
 Stream.prototype.map = function(f) {
-  return Stream(
-    next => this.next(a => next(f(a))),
-    this.complete
-  );
+  return new Stream( handler => run.call(this, {
+    next: x => handler.next(f(x)),
+    complete: () => handler.complete(), // void, by definition you no must do nothing at this point
+    error: x =>  handler.error(x) //void
+  }))
 }
 
 module.exports = Stream;
