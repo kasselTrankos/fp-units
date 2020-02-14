@@ -32,7 +32,7 @@ Stream.prototype.ap = function(that) {
 Stream.prototype.flatmap = function(f) {
   return new Stream(handler=> run.call(this, {
     next: x=> x.map(v => run.call(this,  {
-      next: console.log(v.author, '--.--') ||  handler.next(f(v)),
+      next: handler.next(f(v)),
       error: handler.error,
       complete: handler.complete
     }))
@@ -51,18 +51,6 @@ Stream.prototype.chain = function(m) {
     complete: () => handler.complete(), // void, by definition you no must do nothing at this point
     error: e => handler.error(e)
   }));
-}
-Stream.prototype.join = function() {
-  return new Stream((handler) => {
-    return run.call(this, {
-      next: (stream) => run.call(stream, {
-        next: handler.next,
-        error: handler.error
-      }),
-      error: (e) => handler.error(e),
-      complete: () => handler.complete()
-    })
-  })
 }
 
 

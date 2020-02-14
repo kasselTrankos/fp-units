@@ -18,9 +18,9 @@ console.log(ID.of(x).chain(fn1), '=====', fn1(x));
 // m['fantasy-land/chain'](M['fantasy-land/of']) is equivalent to m (right identity)
 // 4 === 4
 Monad.of(x).chain(Monad.of).next(console.log);
-console.log('=====')
+console.log('===Monad==')
 Monad.of(x).next(console.log)
 Stream.of(x).chain(Stream.of).subscribe({next: console.log});
-console.log('=====')
+console.log('==Stream===')
 Stream.of(x).subscribe({next: console.log})
 console.log(ID.of(4).chain(ID.of), '=====', ID.of(4))
