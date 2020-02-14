@@ -39,11 +39,19 @@ Stream.prototype.join = function() {
   })
 }
 
+// flatmap :: f => f a ~> [...a] -> ...a
+Stream.prototype.flatmap = function(f) {
+  return new Stream(handler=> run.call(this, {
+    next: x=> x.map(v => handler.next(f(v))),
+    error: handler.error,
+    complete: handler.complete
+  }));
+}
+
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
 Stream.prototype.chain = function(m) {
-  console.log(m.toString(), '00000')
   return new Stream(handler => run.call(this, {
-    next: x => console.log(x, x.toString(), '123123123123', m.toString()) || m(x)._constructor({
+    next: x => m(x)._constructor({
       next: handler.next, 
       error: handler.error,
       complete: handler.complete
