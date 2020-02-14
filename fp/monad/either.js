@@ -41,11 +41,12 @@ Either.prototype.alt = function (that) {
 
 Either.alt = Either.prototype.alt;
 
-Either.prototype.of = function(x) {
+Either.prototype.of = function _of(x) {
   return this.cata({
     Right: _ => this,
     Left: () => x
   });
 }
+Either.of = Either.prototype.of;
 
 module.exports = Either;
