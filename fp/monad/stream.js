@@ -26,6 +26,32 @@ Stream.prototype.ap = function(that) {
   return that.chain(f => this.map(f));
 }
 
+// flatmap :: f => f a ~> [...a] -> a a a ...
+// flatmap _ [] = []  
+// flatmap f (x:xs) = f x ++ flatmap f xs
+Stream.prototype.flatmap = function(f) {
+  return new Stream(handler=> run.call(this, {
+    next: x=> x.map(v => run.call(this,  {
+      next: console.log(v.author, '--.--') ||  handler.next(f(v)),
+      error: handler.error,
+      complete: handler.complete
+    }))
+    
+  }));
+}
+
+// chain :: Chain m => m a ~> ( a -> m b) -> m b
+Stream.prototype.chain = function(m) {
+  return new Stream(handler => run.call(this, {
+    next: x =>  m(x)._constructor({
+      next: handler.next, 
+      error: handler.error,
+      complete: handler.complete
+    }),
+    complete: () => handler.complete(), // void, by definition you no must do nothing at this point
+    error: e => handler.error(e)
+  }));
+}
 Stream.prototype.join = function() {
   return new Stream((handler) => {
     return run.call(this, {
@@ -39,34 +65,12 @@ Stream.prototype.join = function() {
   })
 }
 
-// flatmap :: f => f a ~> [...a] -> a a a ...
-Stream.prototype.flatmap = function(f) {
-  return new Stream(handler=> run.call(this, {
-    next: x=> x.map(v => handler.next(f(v))),
-    error: handler.error,
-    complete: handler.complete
-  }));
-}
-
-// chain :: Chain m => m a ~> ( a -> m b) -> m b
-Stream.prototype.chain = function(m) {
-  return new Stream(handler => run.call(this, {
-    next: x => m(x)._constructor({
-      next: handler.next, 
-      error: handler.error,
-      complete: handler.complete
-    }),
-    complete: () => handler.complete(), // void, by definition you no must do nothing at this point
-    error: e => handler.error(e)
-  }));
-}
 
 // concat :: Semigroup f => f a ~> a -> a
 // debo esperar a que termine el  current stream para juntar al siguiente stream.
 Stream.prototype.concat = function (that) {
-  console.log(' aoaoosdosa', that.map(x => x))
-  return new Stream(handler =>console.log('00000 ruuuun')  ||  console.log(that) || run.call(this, {
-    next: x => console.log(x, '000000 runnnnn') || handler.next(x) && run.call(that, {
+  return new Stream(handler => run.call(this, {
+    next: x => handler.next(x) && run.call(that, {
       next: that.next
     })
   }));

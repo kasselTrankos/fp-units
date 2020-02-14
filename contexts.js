@@ -13,8 +13,10 @@ const getByID= id => new Stream(({next, complete, error})=> {
     { json: true }, 
     (err, res, body) => err ? complete(err) : next(body))
 });
-const timer = ({author, delay}) => new Stream(({next, complete, error})=> {
-  setTimeout(()=> author === 'alvaro' ? complete(author) :next(author), delay);
+const timer = d => new Stream(({next, complete, error})=> {
+  const {author, delay} = d
+  
+  setTimeout(()=> author === 'Ramon' ? complete(author) : next(author+ '12312123ñññññ'), 123);
 });
 
 // insideOut :: Applicative f
@@ -26,24 +28,38 @@ const insideOut = (T, xs) => xs.reduce((acc, x) => liftM(append, x, acc), T.of([
 const paralleliseTaskArray = f => data => insideOut(Stream, data.map(f))
 
 /// object :: f => Stream next
-const tempo = ({author, time}) => new Stream(({next, error}) => {
+const tempo = ({author, time}) => console.log('dsadassda') || Stream.of(({next, error, complete}) => {
+  console.log('inititotot')
   const t = setInterval(()=> {
     if (new Date().getTime()>=new Date(time).getTime()) {
-      next(author);
+      author ===  'alvar1o' ? complete (): next(author);
       clearInterval(t);
     }
   }, 1000);
+});
+const apptempo = new Stream(({next, error, complete}) => {
+  ({author, time}) => {
+    console.log('inititotot')
+    const t = setInterval(()=> {
+      if (new Date().getTime()>=new Date(time).getTime()) {
+        author ===  'Ramon' ? complete (): next(author);
+        clearInterval(t);
+      }
+    }, 1000);
+  }
 });
 
 
 const program = pipe (
   paralleliseTaskArray(getByID),
+  // chain(paralleliseTaskArray(timer)),
   flatmap(x => x),
-  chain(tempo)
+  chain(timer),
+  map(x => x + '123123'),
 );
 
 
-program([1,2,3, 4,5,6]).subscribe({
+program([1, 2, 3]).subscribe({
   next: a => console.log('es muy mierdos', a),//console.log('next--->', a),
   complete: () =>  console.log('complete'),
   error: e => console.log(e, '<----errror')
