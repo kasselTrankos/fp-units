@@ -14,35 +14,32 @@ const getByID= id => new Stream(({next, complete, error})=> {
     (err, res, body) => err ? complete(err) : next(body))
 });
 const timer = ({author, delay}) => new Stream(({next, complete, error})=> {
-  setTimeout(()=> author === 'alvaro' ? error(author) :next(author), delay);
+  setTimeout(()=> author === 'alvaro' ? complete(author) :next(author), delay);
 });
 
 // insideOut :: Applicative f
 //           => [f a] -> f [a]
 const insideOut = (T, xs) => xs.reduce((acc, x) => liftM(append, x, acc), T.of([]))
-const outter = (T, xs) => xs.reduce((acc, x) => liftM(concat, x, acc), T.of([]))
 
 // paralleliseTaskArray
 //   :: [Int] -> Stream e [User]
 const paralleliseTaskArray = f => data => insideOut(Stream, data.map(f))
-const running = f => data => insideOut(Stream, data.map(f))
 
-// :: Stream [User] -> Stream [Stream] -> Stream
-const toStreamOfStreams = T => T.map(x => x.map(g => new Stream(({next})=>  next(g))))
-const tempo = data => {
-  const [head, ...tail] = data;
-  data.reduce((acc, el)=> timer(el), timer(head));
-}
+/// object :: f => Stream next
+const tempo = ({author, time}) => new Stream(({next, error}) => {
+  const t = setInterval(()=> {
+    if (new Date().getTime()>=new Date(time).getTime()) {
+      next(author);
+      clearInterval(t);
+    }
+  }, 1000);
+});
 
 
 const program = pipe (
   paralleliseTaskArray(getByID),
   flatmap(x => x),
-  chain(timer)
-//  chain(map(timer))
-  // map(map(x => setTimeout(()=>  console.log(x), 1000)))
-  // map(map(x => ({author: x['author'], delay: x['delay']}))),
-  // chain(running(timer)),
+  chain(tempo)
 );
 
 

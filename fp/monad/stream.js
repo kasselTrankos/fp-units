@@ -39,7 +39,7 @@ Stream.prototype.join = function() {
   })
 }
 
-// flatmap :: f => f a ~> [...a] -> ...a
+// flatmap :: f => f a ~> [...a] -> a a a ...
 Stream.prototype.flatmap = function(f) {
   return new Stream(handler=> run.call(this, {
     next: x=> x.map(v => handler.next(f(v))),
