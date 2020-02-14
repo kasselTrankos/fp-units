@@ -26,10 +26,24 @@ Stream.prototype.ap = function(that) {
   return that.chain(f => this.map(f));
 }
 
+Stream.prototype.join = function() {
+  return new Stream((handler) => {
+    return run.call(this, {
+      next: (stream) => run.call(stream, {
+        next: handler.next,
+        error: handler.error
+      }),
+      error: (e) => handler.error(e),
+      complete: () => handler.complete()
+    })
+  })
+}
+
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
 Stream.prototype.chain = function(m) {
+  console.log(m.toString(), '00000')
   return new Stream(handler => run.call(this, {
-    next: x => m(x)._constructor({
+    next: x => console.log(x, x.toString(), '123123123123', m.toString()) || m(x)._constructor({
       next: handler.next, 
       error: handler.error,
       complete: handler.complete
