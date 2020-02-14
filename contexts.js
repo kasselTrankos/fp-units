@@ -10,7 +10,7 @@ const getByID= id => new Stream(({next, complete, error})=> {
     { json: true }, 
     (err, res, body) => err ? complete(err) : next(body))
 });
-const timer = ({author, delay}) =>  console.log(author) || new Stream(({next, complete})=> {
+const timer = ({author, delay}) => new Stream(({next, complete, error})=> {
   setTimeout(()=> console.log('ne', author, delay) || next(author), delay);
 });
 
@@ -22,16 +22,16 @@ const outter = (T, xs) => xs.reduce((acc, x) => liftM(concat, x, acc), T.of([]))
 // paralleliseTaskArray
 //   :: [Int] -> Stream e [User]
 const paralleliseTaskArray = f => data => insideOut(Stream, data.map(f))
-const running = f => data => console.log(insideOut(Stream, data.map(f)), '000001') || insideOut(Stream, data.map(f))
+const running = f => data => insideOut(Stream, data.map(f))
 
 // :: Stream [User] -> Stream [Stream] -> Stream
-const toStreamOfStreams = T => T.map(x => x.map(g => console.log(g, '0000') || new Stream(({next})=> console.log(g, ' 00000') || next(g))))
+const toStreamOfStreams = T => T.map(x => x.map(g => new Stream(({next})=>  next(g))))
 
 
 
 const program = pipe (
   paralleliseTaskArray(getByID),
-  map(map(x => ({author: x['author'], delay: x['delay']}))),
+  // map(map(x => ({author: x['author'], delay: x['delay']}))),
   chain(running(timer)),
 );
 

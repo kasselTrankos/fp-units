@@ -30,7 +30,7 @@ Stream.prototype.ap = function(that) {
 Stream.prototype.chain = function(m) {
   return new Stream(handler => run.call(this, {
     next: x => m(x)._constructor({
-      next: x => handler.next(x), 
+      next: handler.next, 
       error: handler.error,
       complete: handler.complete
     }),

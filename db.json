@@ -1,11 +1,11 @@
 {
   "posts": [
-    { "id": 1, "title": "json-server", "author": "alvaro", "delay": 1000 },
-    { "id": 2, "title": "json-server", "author": "Ramon", "delay": 5000 },
-    { "id": 3, "title": "json-server", "author": "paddington", "delay": 1300 },
-    { "id": 4, "title": "json-server", "author": "vera", "delay": 1400 },
-    { "id": 5, "title": "json-server", "author": "mary", "delay": 2300 },
-    { "id": 6, "title": "json-server", "author": "alaam", "delay": 2100 }
+    { "id": 1, "title": "json-server", "author": "alvaro", "delay": 500 },
+    { "id": 2, "title": "json-server", "author": "Ramon", "delay": 500 },
+    { "id": 3, "title": "json-server", "author": "paddington", "delay": 300 },
+    { "id": 4, "title": "json-server", "author": "vera", "delay": 400 },
+    { "id": 5, "title": "json-server", "author": "mary", "delay": 200 },
+    { "id": 6, "title": "json-server", "author": "alaam", "delay": 100 }
   ],
   "comments": [
     { "id": 1, "body": "some comment", "postId": 1 }
