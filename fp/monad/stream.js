@@ -39,6 +39,17 @@ Stream.prototype.chain = function(m) {
   }));
 }
 
+// concat :: Semigroup f => f a ~> a -> a
+// debo esperar a que termine el  current stream para juntar al siguiente stream.
+Stream.prototype.concat = function (that) {
+  console.log(' aoaoosdosa', that.map(x => x))
+  return new Stream(handler =>console.log('00000 ruuuun')  ||  console.log(that) || run.call(this, {
+    next: x => console.log(x, '000000 runnnnn') || handler.next(x) && run.call(that, {
+      next: that.next
+    })
+  }));
+}
+
 // map :: Functor f => f a ~> (a -> b) -> f b
 Stream.prototype.map = function(f) {
   return new Stream( handler => run.call(this, {
