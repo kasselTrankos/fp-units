@@ -43,7 +43,7 @@ const program = pipe (
 );
 
 
-program([1,2,3]).subscribe({
+program([1,2,3, 4,5,6]).subscribe({
   next: a => console.log('es muy mierdos', a),//console.log('next--->', a),
   complete: () =>  console.log('complete'),
   error: e => console.log(e, '<----errror')
