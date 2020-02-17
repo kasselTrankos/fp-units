@@ -50,7 +50,7 @@ const program = pipe (
 
 
 program([1, 2, 3]).subscribe({
-  next: a => console.log('send new iriigate next: ', a, new Date()),//console.log('next--->', a),
+  next: a => console.log('send new irigate next: ', a, new Date()),//console.log('next--->', a),
   complete: () =>  console.log('complete', new Date()),
   error: e => console.log(e, '< get - tjs---errror')
 });

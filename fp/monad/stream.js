@@ -30,12 +30,15 @@ Stream.prototype.ap = function(that) {
 // flatmap _ [] = []  
 // flatmap f (x:xs) = f x ++ flatmap f xs
 Stream.prototype.flatmap = function(f) {
+  
   return new Stream(handler=> run.call(this, {
-    next: x=> x.map(v => run.call(this,  {
+    next: x=> {
+      return x.map(v => run.call(this,  {
       next: handler.next(f(v)),
       error: handler.error,
       complete: handler.complete
     }))
+  }
     
   }));
 }
