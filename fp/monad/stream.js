@@ -60,10 +60,10 @@ Stream.prototype.join = function() {
     _stream = this.subscribe({
       next: stream => {
         streams++;
-        console.log('coun', streams);
+        // console.log('coun', streams);
         __stream = stream.subscribe({
           next: value => {
-            console.log('12-------------3 complete never complete>:; ', completes, 'streams -->', streams)
+            // console.log('12-------------3 complete never complete>:; ', completes, 'streams -->', streams)
             observer.next(value);
             if(streams === completes){
               observer.complete();

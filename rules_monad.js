@@ -8,10 +8,10 @@ const fnStream = s => Stream.of(s+ 45);
 const fn1 = x => ID.of(x + 2);
 
 const x = 4;
-Stream.of(x).chain(fnStream).subscribe({next: a=> console.log('stream is', a)})
-Monad.of(x).chain(fn).next(a => console.log('monad is ', a))
+Stream.of(x).chain(fnStream).subscribe({next: a=> console.log('stream===', a)})
+Monad.of(x).chain(fn).next(a => console.log('monad=== ', a))
 fn(x).next(console.log)
-fnStream(x).subscribe({next: a => console.log('clean stream is same', a)})
+fnStream(x).subscribe({next: a => console.log('===stream', a)})
 console.log(ID.of(x).chain(fn1), '=====', fn1(x));
 
 // rule 2
