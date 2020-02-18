@@ -84,7 +84,9 @@ Stream.prototype.join = function() {
   );
   return ()=> {
     _stream();
-    __stream && __stream();
+    // this is a techique to no run second stream untill is created. so [undefined]
+    // then no run anything
+    subs.forEach(unsus => unsus())
   }
 });
 }
