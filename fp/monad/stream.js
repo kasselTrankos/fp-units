@@ -49,18 +49,17 @@ Stream.prototype.flatmap = function(f) {
 Stream.prototype.chain = function(m) {
   return this.map(m).join();
 }
-// join :: 
+// join :: Stream (Stream a) ~> Stream a
 Stream.prototype.join = function() {
   let streams = 0;
   let completes = 0;
-  let subs = [];
-  let _stream, __stream;
+  const subs = [];
 
   return new Stream(observer => {
-    _stream = this.subscribe({
+    const _stream = this.subscribe({
       next: stream => {
         streams++;
-        __stream = stream.subscribe({
+        const __stream = stream.subscribe({
           next: value => {
             observer.next(value);
             if(streams === completes){
@@ -109,6 +108,17 @@ Stream.prototype.map = function(f) {
     complete: () => handler.complete(), // void, by definition you no must do nothing at this point
     error: x =>  handler.error(x) //
   }));
+}
+
+// from :: Stream ~> [a] ~> Stream a
+Stream.from = function(xs) {
+  return new Stream(stream => {
+    for(let x of xs){
+      stream.next(x);
+    }
+    stream.complete();
+    return ()=> {}// unsubs
+  });
 }
 
 module.exports = Stream;

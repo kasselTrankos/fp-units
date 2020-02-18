@@ -19,51 +19,16 @@ const getByID= id => new Stream(({next, complete, error})=> {
 });
 const timer = d => new Stream(({next, complete, error})=> {
   const {author, delay} = d
-  
-  const t = setTimeout(()=> complete() || next('author'), 100);
+  const t = setTimeout(()=> complete() || next(delay), delay);
   return ()=> clearInterval(t); // un sub
 });
 
 
-
-// // insideOut :: Applicative f
-// //           => [f a] -> f [a]
-// const insideOut = (T, xs) => xs.reduce((acc, x) => liftM(append, x, acc), T.of([]))
-
-// // paralleliseTaskArray
-// //   :: [Int] -> Stream e [User]
-// const paralleliseTaskArray = f => data => insideOut(Stream, data.map(f))
-
-// /// object :: f => Stream next
-// const counter = ()=>{
-//   let s =0;
-//   return c => new Stream(({complete, next})=> {
-//     s++;
-//     next(c)
-//     if(s===3) complete();
-//   })
-// };
-
-// const program = pipe (
-//   chain(timer)
-//   // paralleliseTaskArray(getByID),
-//   // chain(paralleliseTaskArray(timer)),
-//   // flatmap(x=> x),
-//   // chain(timer),
-//   // chain(counter())
-
-// );
-
-
-const unsus = Stream.of(1)
+const _unbsus = Stream.from([1, 2, 3])
 .chain(getByID)
 .chain(timer)
-.chain(timer)
-
 .subscribe({
   next: a => console.log('NEXT: ', a, new Date()),//console.log('next--->', a),
   complete: () =>  console.log('completeTTT', new Date()),
   error: e => console.log(e, '< get - tjs---errror'),
-  
 });
-unsus();
