@@ -1,6 +1,6 @@
 const daggy = require('daggy');
-const {Left, Right} = require('./either');
-const Task = require('./task');
+const {Left, Right} = require('./fp/monad/either');
+const Task = require('./fp/monad/task');
 const Item = daggy.tagged('Item', ['title'])
 
 const List = daggy.taggedSum('List', {

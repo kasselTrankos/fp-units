@@ -1,7 +1,7 @@
-const Task = require('./task');
+const {Task} = require('./../fp/monad');
 const request = require('request');
-const {Right, Left} = require('./either');
-const {liftM} = require('./utils');
+const {Right, Left} = require('./../fp/monad/either');
+const {liftM} = require('./../utils');
 
 
 const T  = id => new Task((reject, resolve)=> request(
