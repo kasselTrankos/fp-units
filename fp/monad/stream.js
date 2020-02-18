@@ -91,16 +91,6 @@ Stream.prototype.join = function() {
 }
 
 
-// concat :: Semigroup f => f a ~> a -> a
-// debo esperar a que termine el  current stream para juntar al siguiente stream.
-Stream.prototype.concat = function (that) {
-  return new Stream(handler => run.call(this, {
-    next: x => handler.next(x) && run.call(that, {
-      next: that.next
-    })
-  }));
-}
-
 // map :: Functor f => f a ~> (a -> b) -> f b
 Stream.prototype.map = function(f) {
   return new Stream( handler => run.call(this, {
