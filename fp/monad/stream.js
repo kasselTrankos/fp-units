@@ -29,14 +29,27 @@ Stream.prototype.ap = function(that) {
   return that.chain(f => this.map(f));
 }
 
+// filter :: Filterable f => f a ~> (a -> Boolean ) -> f a
+Stream.prototype.filter = function(f) {
+  return new Stream(stream => {
+    this.subscribe({
+      next: x => {
+        if(f(x)) stream.next(x);
+      },
+      complete: stream.complete,
+      error: stream.error
+    });
+  });
+}
+
 // flatmap :: f => f a ~> [...a] -> a a a ...
 // flatmap _ [] = []  
 // flatmap f (x:xs) = f x ++ flatmap f xs
 Stream.prototype.flatmap = function(f) {
   
-  return new Stream(handler=> run.call(this, {
+  return new Stream(handler=> this.subscribe({
     next: x=> {
-      return x.map(v => run.call(this,  {
+      return x.map(v => this.subscribe({
       next: handler.next(f(v)),
       error: handler.error,
       complete: handler.complete
@@ -93,7 +106,7 @@ Stream.prototype.join = function() {
 
 // map :: Functor f => f a ~> (a -> b) -> f b
 Stream.prototype.map = function(f) {
-  return new Stream( handler => run.call(this, {
+  return new Stream( handler => this.subscribe({
     next: x => handler.next(f(x)),
     complete: () => handler.complete(), // void, by definition you no must do nothing at this point
     error: x =>  handler.error(x) //
