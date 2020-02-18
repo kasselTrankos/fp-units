@@ -1,5 +1,5 @@
 const readline = require('readline');
-const Task = require('./task');
+const {Task} = require('./fp/monad');
 const request = require('request');
 
 const {curry, chain, pipe, getProperty} = require('./utils');

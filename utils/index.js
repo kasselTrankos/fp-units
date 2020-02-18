@@ -1,5 +1,5 @@
-const {Left, Right} = require('./../either');
-const Task = require('./../task');
+const {Left, Right} = require('./../fp/monad/either');
+const Task = require('./../fp/monad/task');
 const liftM = (f, ...args)=> {
   const [head, ...tail] = args;
   return tail.reduce((acc, curr)=> curr.ap(acc), head.map(f))
