@@ -60,34 +60,32 @@ Stream.prototype.join = function() {
     _stream = this.subscribe({
       next: stream => {
         streams++;
-        // console.log('coun', streams);
         __stream = stream.subscribe({
           next: value => {
-            // console.log('12-------------3 complete never complete>:; ', completes, 'streams -->', streams)
             observer.next(value);
             if(streams === completes){
               observer.complete();
             }
           },
           complete: () => {
-            observer.complete();
+            completes++
           },
           error: observer.error
         });
-        
+        subs.push(__stream);
       },
       complete: () => {
-        console.log(completes, 'calla tin');
-        completes++;
+        if(completes === streams){
+          observer.complete();
+        }
       }, 
       error: e => observer.error(e)
     }
   );
   return ()=> {
     _stream();
-    __stream();
+    __stream && __stream();
   }
-
 });
 }
 

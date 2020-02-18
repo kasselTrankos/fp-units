@@ -7,15 +7,20 @@ const {chain, pipe} = require('ramda');
 // const concat = x => xs => xs.concat(x);
 // const flatmap = f => xs => xs.flatmap(f);
 const getByID= id => new Stream(({next, complete, error})=> {
-  return request(`http://localhost:3000/posts/${id}`, 
+  let _continue = true;
+  request(`http://localhost:3000/posts/${id}`, 
     { json: true }, 
-    (err, res, body) => err ? complete(err) : next(body))
+    (err, res, body) => {
+      if (_continue) {
+        err ? error(err) : (complete() || next(body))
+      }
+  });
+  return ()=> {_continue = false;}
 });
-// let c = 0;
 const timer = d => new Stream(({next, complete, error})=> {
   const {author, delay} = d
   
-  const t = setTimeout(()=> next('author'), 100);
+  const t = setTimeout(()=> complete() || next('author'), 100);
   return ()=> clearInterval(t); // un sub
 });
 
@@ -50,11 +55,15 @@ const timer = d => new Stream(({next, complete, error})=> {
 // );
 
 
-Stream.of(1)
+const unsus = Stream.of(1)
 .chain(getByID)
 .chain(timer)
+.chain(timer)
+
 .subscribe({
   next: a => console.log('NEXT: ', a, new Date()),//console.log('next--->', a),
   complete: () =>  console.log('completeTTT', new Date()),
-  error: e => console.log(e, '< get - tjs---errror')
+  error: e => console.log(e, '< get - tjs---errror'),
+  
 });
+unsus();
