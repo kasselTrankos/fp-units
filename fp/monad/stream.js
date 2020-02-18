@@ -45,15 +45,43 @@ Stream.prototype.flatmap = function(f) {
 
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
 Stream.prototype.chain = function(m) {
-  return new Stream(handler => run.call(this, {
-    next: x =>  m(x)._constructor({
-      next: handler.next, 
-      error: handler.error,
-      complete: handler.complete
-    }),
-    complete: () => handler.complete(), // void, by definition you no must do nothing at this point
-    error: e => handler.error(e)
-  }));
+  let numStreams = 0
+  let completeds = 0
+  const subscriptions = []
+  
+  return new Stream((observer) => {
+    const unsubL1 = this.subscribe({
+      next: (stream) => {
+        numStreams++
+        const unsubl2 = stream.subscribe({
+          next: (value) => {
+            observer.next(value)
+            if(numStreams === completeds){
+              observer.complete()
+            }
+          },
+          error: observer.error,
+          complete: () => {
+            if(numStreams === completeds){
+              observer.complete()
+            }
+          }
+        })
+
+        subscriptions.push(unsubl2)
+
+      },
+      error: observer.error,
+      complete: () => {
+        completeds++
+      }
+    })
+
+    return () => {
+      unsubL1()
+      subscriptions.forEach(unsub => unsub())
+    }
+  });
 }
 
 
@@ -74,6 +102,15 @@ Stream.prototype.map = function(f) {
     complete: () => handler.complete(), // void, by definition you no must do nothing at this point
     error: x =>  handler.error(x) //
   }));
+}
+
+Stream.from = (it) => {
+  return new Stream((observer) => {
+    for(let item of it){
+      observer.next(item)
+    }
+    observer.complete()
+  })
 }
 
 module.exports = Stream;

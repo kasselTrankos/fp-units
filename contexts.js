@@ -1,7 +1,25 @@
 const {Stream} = require('./fp/monad');
-const {liftM, map, pipe, chain, ap, curry} = require('./fp/utils');
+// const {liftM, ap, curry} = require('./fp/utils');
 const request = require('request');
+const { lift, add, map, prop, pipe, chain, append, curry } = require('ramda')
 
+// delay :: Number -> a -> Stream a
+const delay = curry((ms, x) => {
+  return new Stream((observer) => {
+    const id = setTimeout(() => observer.next(x), ms)
+    return () => clearInterval(id)
+  })
+})
+
+Stream.from([1,2,3,4])
+//.chain(({ time, ...data}) => delay(time, data))
+.subscribe({
+  next: console.log,
+  error: console.error,
+  complete: () => console.log('-------')
+})
+
+/*
 const append = x => xs => [... xs, x];
 const concat = x => xs => xs.concat(x);
 const flatmap = f => xs => xs.flatmap(f);
@@ -14,8 +32,6 @@ const getByID= id => new Stream(({next, complete, error})=> {
 let c = 0;
 const timer = d => new Stream(({next, complete, error})=> {
   const {author, delay} = d
-  
-  
   setTimeout(()=> next(author), delay);
 });
 
@@ -54,3 +70,27 @@ program([1, 2, 3]).subscribe({
   complete: () =>  console.log('complete', new Date()),
   error: e => console.log(e, '< get - tjs---errror')
 });
+*//*
+
+
+const ids = [1, 2, 3 ]
+const delay = (ms) => (x) => new Task((_, resolve) => setTimeout(() => resolve(x), ms))
+
+const getByID= pipe(
+  id => new Task((reject, resolve)=> {
+    request(`http://localhost:3000/posts/${id}`, { json: true }, (err, res, body) => err ? reject(err) : resolve(body))
+  }),
+  chain(delay(1000))
+)
+
+// traverse :: Applicative A, Foldable F => (a -> A a) -> (a -> A b) -> F a
+const traverse = (of, f, foldable) => foldable.reduce(
+  (taskOfArry, item) => {
+    const taskOfItem = f(item)
+    return lift(append)(taskOfItem)(taskOfArry)
+  }, 
+  of([]))
+
+  const sequence = (of, foldable) => traverse(of, x => x, foldable) 
+
+  sequence(Task.of, ids.map(getByID)).fork(console.log, console.log)*/

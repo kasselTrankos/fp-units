@@ -60,12 +60,12 @@ Task.prototype.ap = function(that) {
       }
     }
     const _this = _thisFork(guardReject, guard(x => {
-      vLoaded = true;
-      v = x;
-    }));
-    const _that = _thatFork(guardReject, guard(x => {
       fLoaded = true;
       fn = x;      
+    }));
+    const _that = _thatFork(guardReject, guard(x => {
+      vLoaded = true;
+      v = x;
     }));
     
     return allState = [_this, _that];
