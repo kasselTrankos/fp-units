@@ -80,7 +80,7 @@ Stream.prototype.join = function() {
             }
           },
           complete: () => {
-            completes++
+            completes++;
           },
           error: observer.error
         });
