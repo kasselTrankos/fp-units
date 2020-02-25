@@ -3,5 +3,6 @@ const Stream = require('./stream');
 const Either = require('./either');
 const ID = require('./identity');
 const Monad = require('./monad');
+const Pair = require('./pair');
 
-module.exports = {Task, Stream, Either, ID, Monad}
+module.exports = {Task, Stream, Either, ID, Monad, Pair}
