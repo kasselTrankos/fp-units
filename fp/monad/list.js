@@ -18,13 +18,6 @@ LinkedList.prototype.reduce = function(f, acc) {
   if(cdr){
     return cdr.reduce(f, _acc);
   }
-  
-  // if(!acc) {
-	// 	console.log('total', acc);
-	// } else {
-	// 	const [car, cdr] = acc.Cons;
-	// 	return cdr.reduce(f, f(acc, car))
-	// }
 	return _acc;
 }
 

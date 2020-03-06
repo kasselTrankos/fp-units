@@ -22,5 +22,5 @@ const sum = (acc, List) => {
 	return acc;
 }
 // log(aL)
-const n = aL.reduce((acc, e) => [...acc, e.a],  [123, 1, '0'])
+const n = aL.reduce((acc, e) => ({...acc, ...e}),  {})
 console.log('lin', aL, 'tol: ', n);
