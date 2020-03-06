@@ -14,7 +14,7 @@ LinkedList.of = function(x) {
 // reduce :: Foldable f => f a ~> ((b, a) -> b, b) -> b
 LinkedList.prototype.reduce = function(f, acc) {
   const [car, cdr] = this.Cons;
-  const _acc = f(car, acc);
+  const _acc = f(acc, car);
   if(cdr){
     return cdr.reduce(f, _acc);
   }
