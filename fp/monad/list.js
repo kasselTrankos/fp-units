@@ -47,7 +47,10 @@ LinkedList.prototype.concat = function (a) {
     return LinkedList.of(car, cdr.concat(a));
   }
   const [carA, cdrA] = a.Cons;
-  return LinkedList.of(car, carA ? LinkedList.of(carA, cdrA) : undefined);
+  console.log(carA, cdrA, car)
+  return car 
+    ? LinkedList.of(car, carA ? LinkedList.of(carA, cdrA) : undefined)
+    : LinkedList.of(carA, cdrA);
 }
 
 
