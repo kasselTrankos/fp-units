@@ -35,4 +35,14 @@ LinkedList.prototype.map = function(f) {
   return LinkedList.of(f(car), cdr);
 }
 
+// concat :: Semigroup a => a ~> a -> a
+LinkedList.prototype.concat = function (a) {
+  const [car, cdr] = this.Cons;
+  if(cdr){
+    return LinkedList.of(car, cdr.concat(a));
+  }
+  const [carA, cdrA] = a.Cons;
+  return LinkedList.of(car, LinkedList.of(carA, cdrA));
+}
+
 module.exports = LinkedList;
