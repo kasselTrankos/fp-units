@@ -1,6 +1,6 @@
 const {LinkedList} = require('./fp/monad');
-const a = [{a: 1}, {a: 2}, {a: 10}, {m:1}];
-const aL = LinkedList.of(a);
+const a = [{a: 1}, {a: 2}, {a: 10}, {a:11}];
+const aL = LinkedList.from(a);
 const log = List  => {
 	if(!List) {
 		console.log('end')
@@ -9,10 +9,6 @@ const log = List  => {
 		console.log(car, 'car')
 		log(cdr)
 	}
-	// const [head, tail] = Cons;
-	// console.log(head);
-	// if(tail) read(tail)
-	
 }
 const sum = (acc, List) => {
 	if(List) {
@@ -22,5 +18,9 @@ const sum = (acc, List) => {
 	return acc;
 }
 // log(aL)
-const n = aL.reduce((acc, e) => ({...acc, ...e}),  {})
-console.log('lin', aL, 'tol: ', n);
+// const n = aL.reduce((acc, e) => ({...acc, ...e}),  {})
+const fm = item => ({a: item.a + 3});
+const mapped = aL.map(fm);
+log(mapped)
+console.log(mapped)
+// console.log('lin', aL, 'tol: ', n);
