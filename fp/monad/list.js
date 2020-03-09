@@ -1,9 +1,13 @@
 function LinkedList(car, cdr) {
-  this.Cons = [car, cdr];
+
+  this.Cons = [];
+  car && this.Cons.push(car);
+  cdr && this.Cons.push(cdr);
+
 }
 // empty :: Moinid m => () -> m
 LinkedList.empty = function() {
-  return [];
+  return LinkedList.of();
 }
 
 // of :: Aplicative f => f -> a -> f a 
@@ -16,6 +20,7 @@ LinkedList.from = function(x) {
   const [head, ...tail] = x.reverse();
   return tail.reduce((acc, el)=> new LinkedList(el, acc), new LinkedList(head));
 }
+
 // reduce :: Foldable f => f a ~> ((b, a) -> b, b) -> b
 LinkedList.prototype.reduce = function(f, acc) {
   const [car, cdr] = this.Cons;
@@ -42,7 +47,10 @@ LinkedList.prototype.concat = function (a) {
     return LinkedList.of(car, cdr.concat(a));
   }
   const [carA, cdrA] = a.Cons;
-  return LinkedList.of(car, LinkedList.of(carA, cdrA));
+  return LinkedList.of(car, carA ? LinkedList.of(carA, cdrA) : undefined);
 }
+
+
+
 
 module.exports = LinkedList;
