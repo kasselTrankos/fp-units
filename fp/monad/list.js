@@ -47,10 +47,14 @@ LinkedList.prototype.concat = function (a) {
     return LinkedList.of(car, cdr.concat(a));
   }
   const [carA, cdrA] = a.Cons;
-  console.log(carA, cdrA, car)
   return car 
     ? LinkedList.of(car, carA ? LinkedList.of(carA, cdrA) : undefined)
     : LinkedList.of(carA, cdrA);
+}
+
+// chain :: Chain m => m a ~> ( a -> m b)-> m b
+LinkedList.prototype.chain  = function(f) {
+  return LinkedList.empty().concat(this.map(f));
 }
 
 
