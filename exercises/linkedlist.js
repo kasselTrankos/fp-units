@@ -3,7 +3,24 @@ const {composeK, chain, compose} = require('ramda');
 
 const log = message => (acc, elm)=> console.log(message, elm)
 
+//+ seq :: Int -> Writer [Int] Int
+const seq = upper => {
+  const list = LinkedList.empty();
+	//+ seq_ :: Int -> Writer [Int] Int
+	const seq_ = ([car, cdr]) => car >= upper
+  
+	  // If we're done, stop here!
+	  ? list.concat(LinkedList.of(upper, cdr))
+  
+	  // If we're not...
+	  : list.concat(LinkedList.of(car + 1, LinkedList.of(car, cdr)).chain(seq_)) // ...chain(seq_)!
 
+  
+  
+	// Kick everything off
+	return seq_([1])
+}
+seq(8).reduce(log('SEQ RUNNIG: ', undefined))
 // chain
 const _ch = x => {
   const [car, cdr] = x;
