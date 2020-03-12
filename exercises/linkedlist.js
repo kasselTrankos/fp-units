@@ -20,7 +20,7 @@ const seq = upper => {
 	// Kick everything off
 	return seq_([1])
 }
-seq(8).reduce(log('SEQ RUNNIG: ', undefined))
+seq(1001).reduce(log('SEQ RUNNIG: ', undefined))
 // chain
 const _ch = x => {
   const [car, cdr] = x;
