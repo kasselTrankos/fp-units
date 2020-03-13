@@ -1,6 +1,7 @@
 const {LinkedList, Stream} = require('./fp/monad');
 const fs = require('fs');
-const {pipe, chain, map, filter} = require('ramda');
+const {pipe, chain, map, filter, lift, reduce} = require('ramda');
+const lift2 =(f, a, b, c) => c.ap(b.ap(a.map(f)))
 
 const BASE = './node_modules';
 
@@ -12,16 +13,18 @@ const read = dir => new Stream(({error, complete, next}) => {
     complete();
   });
 });
-
-const recursive = arr => arr.reduce((acc, el) => [...acc, read(BASE+'/'+ el)], [])
+const log = message => (acc, elm)=> console.log(message, elm)
+const append = x => y => xs => console.log('x', x, 'y',y, 'xs', xs) || LinkedList.of(x).concat(y.concat(xs));//[x, y, ...xs];
+const redus = xs => xs.reduce((acc, el)=> lift2(append, Stream.of(el), read(BASE+'/'+ el), acc), Stream.of(LinkedList.empty()))
+const recursive = arr => console.log( arr) || arr.reduce((acc, el) => [...acc, read(BASE+'/'+ el)], [])
 
 const clean = x => x!=='.bin';
 
 const program = pipe(
   read,
-  map(filter(clean)),
-  // map(x => chain(recursive(x))),
+  // map(filter(clean)),
+  chain(redus),
 );
 program(BASE).subscribe({
-  next: e => console.log(' mmm files -> ', e)
+  next: e => console.log(' mmm files -> ', e.reduce(log('el: '), undefined))
 });
