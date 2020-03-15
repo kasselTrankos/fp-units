@@ -1,3 +1,4 @@
+
 const Fn = run => ({
   run,
   map: f => Fn(x => f(run(x))),
@@ -7,14 +8,17 @@ Fn.of = x => Fn(() => x);
 
 const Task = fork => ({
   fork,
+  chain: f => Task((reject, resolve)=> fork(a => reject(a), a=> f(a).fork(reject, resolve))),
   map: f => Task((reject, resolve)=> fork(x => reject(x), x => resolve(f(x)))),
 });
-
+Task.of = x => Task((_, resolve) => resolve(x));
 const a = Fn(x => x  + 4);
 const f = a.map(x => 3 + x).chain(x =>  Fn(x => x + 190));
 console.log(f.run(90))
 
-const t = Task((reject, resolve)=> setTimeout(()=> reject('alvaro'), 100));
-t.fork(e=> console.error('doy un error', e), c => console.log('vabien ', c))
-
-console.log(t, '00000000')
+const t = Task((_, resolve)=> setTimeout(()=> resolve([1,2,3]), 100))
+  .map(x => x.map(a => a +' fat n c0mt9m '))
+  .chain(x => Task.of(x.map(a => a + '--- more clear -')))
+  .fork(e=> console.error('doy un error', e), console.log)
+// console.log(t, '1919991')
+// console.log(t, '00000000')
