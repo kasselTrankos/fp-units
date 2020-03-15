@@ -113,6 +113,11 @@ Stream.prototype.map = function(f) {
   }));
 }
 
+// empty :: Semigroup a => a ~> a -> () -> a
+Stream.empty = function() {
+  return new Stream(handler => handler.next())
+}
+
 // from :: Stream ~> [a] ~> Stream a
 Stream.from = function(xs) {
   return new Stream(stream => {
