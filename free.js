@@ -26,7 +26,6 @@ Free.prototype.chain = function (g){
 }
 
 Free.prototype.map = function(f) {
- 
   return this.chain(a => Free.of(f(a)))
 }
 

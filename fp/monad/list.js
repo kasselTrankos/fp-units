@@ -22,13 +22,12 @@ LinkedList.from = function(x) {
 }
 
 // reduce :: Foldable f => f a ~> ((b, a) -> b, b) -> b
+// se deduce: 
+// 1 - b es el acc, y el type de return :)
+// 2 - se quita el contexto del ADT
 LinkedList.prototype.reduce = function(f, acc) {
   const [car, cdr] = this.Cons;
-  const _acc = f(acc, car);
-  if(cdr){
-    return cdr.reduce(f, _acc);
-  }
-	return _acc;
+  return cdr ? cdr.reduce(f, f(acc, car)) : f(acc, car);
 }
 
 // map :: Functor f a => f (a -> b) -> f b
@@ -46,7 +45,6 @@ LinkedList.prototype.concat = function (a) {
   if(cdr){
     return LinkedList.of(car, cdr.concat(a));
   }
-  console.log(a)
   const [carA, cdrA] = a.Cons;
   const r = car 
     ? LinkedList.of(car, carA ? LinkedList.of(carA, cdrA) : undefined)
