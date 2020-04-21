@@ -86,11 +86,11 @@ Task.prototype.or = function(that) {
   let cleanupThat = that.cleanup;
   let done = false;
 
-  return new Task((reject, resolve)=> {
-    const guard = execution => (value) => {
+  return new Task((_, resolve)=> {
+    const guard = (cleanup, w) => (value) => {
       if (!done) {
         done = true;
-        execution();
+        cleanup();
         resolve(value);
       }
     };
@@ -100,7 +100,10 @@ Task.prototype.or = function(that) {
     _thatFork(that.reject, guard(cleanupThis));
     
 
-  }, this.cleanup);
+  }, () => {
+    cleanupThis();
+    cleanupThat();
+  });
 
 
 

@@ -32,9 +32,9 @@ const timerTask = time => task => new Task((reject, resolve)=> {
   }, time);
 });
 const timer = timerTask(900);
-const tt = RESOLVE(980);
-
-const g = tt.or(RESOLVE(1000)).or(RESOLVE(1200)).fork(console.log, (e)=> console.log(e, '012032'))
+const tt = RESOLVE(1).chain(x => RESOLVE(1));
+const z = new Date().getTime();
+const g = RESOLVE(190).or(RESOLVE(60)).or(RESOLVE(1200)).fork(console.log, (e)=> console.log(e, '012032', new Date().getTime() - z))
 
 // const it = lift2(RESOLVE(100))(REJECT(900))(x=> y => console.log(x, y)|| [x, y])
 //   .map(x=> console.log(x) || x.map(c=> c +1000))
