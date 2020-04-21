@@ -78,5 +78,32 @@ Task.prototype.reduce = function(f, b) {
     this.cleanup
   })
 }
+// or ::  Task t => b -> b
+Task.prototype.or = function(that) {
+  const _thisFork = this.fork;
+  const _thatFork = that.fork;
+  let cleanupThis = this.cleanup;
+  let cleanupThat = that.cleanup;
+  let done = false;
+
+  return new Task((reject, resolve)=> {
+    const guard = execution => (value) => {
+      if (!done) {
+        done = true;
+        execution();
+        resolve(value);
+      }
+    };
+
+
+    _thisFork(this.reject, guard(cleanupThat));
+    _thatFork(that.reject, guard(cleanupThis));
+    
+
+  }, this.cleanup);
+
+
+
+}
 
 module.exports = Task;
