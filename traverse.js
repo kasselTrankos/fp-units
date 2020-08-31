@@ -1,11 +1,19 @@
 const List = require('./list');
 const {liftM, getProperty, pipe, map, prop, safeProp, chain} = require('./utils');
-const Task = require('./task');
+const Task = require('./fp/monad/task');
+// const Task = require('data.task')
 const request = require('request');
 
-
+const lift2 = (f, a, b) => a.map(f).ap(b)
 const append = x => xs => [... xs, x]
-const rusers = [1, 2, 3, 4, 5, 7, 10, 11];
+const rusers = [1, 2];
+
+Array.prototype.traverse = function (T, f) {
+  return this.reduce(
+    //    Here's the map bit! vvvv
+    (acc, x) => lift2(append, f(x), acc),
+    T.of([]))
+}
 const geUserById = id => new Task((reject, resolve) => {
   request(
     `https://jsonplaceholder.typicode.com/users/${id}`, 
@@ -15,7 +23,7 @@ const geUserById = id => new Task((reject, resolve) => {
 // liftM :: Task f => f Task Task -> Task 
 // insideOut :: Applicative f  => [f a] -> f [a]
 const insideOut = (T, xs) => xs.reduce(
-  (acc, x) => liftM(append, x, acc), T.of([]));
+  (acc, x) => lift2(append, x, acc), T.of([2]));
 // paralleliseTaskArray :: [Int] -> Task e [User]
 const getUsers = users =>
   insideOut(Task, users.map(geUserById));
@@ -24,14 +32,15 @@ const getUsers = users =>
 
 // const program = pipe(
 //   getUsers,
-
-  // map(map(prop('0'))),
-  // map(map(prop('name'))),
-  // chain(x=> )
-  // map(map(prop('nickname')))
+//   // map(map(prop('0'))),
+//   // map(map(prop('name'))),
+//   // chain(x=> )
+//   // map(map(prop('nickname')))
 // );
 
-// program(rusers).fork(e=>console.log('00001111', err), r=>  console.log('00000', r))
+// program(rusers)
+[1,2].traverse(Task, geUserById)
+  .fork(e=>console.log('00001111', err), r=>  console.log('00000', r))
 
 // console.log(paralleliseTaskArray(rusers))
-geUserById(1).fork(console.log, console.log)
+// geUserById(1).fork(console.log, console.log)

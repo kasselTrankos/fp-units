@@ -3,7 +3,7 @@ const fs = require('fs');
 const {pipe, chain, map, filter, lift, reduce} = require('ramda');
 const lift2 =(f, a, b, c) => c.ap(b.ap(a.map(f)))
 
-const BASE = './node_modules';
+const BASE = './fp';
 
 const read = dir => new Stream(({error, complete, next}) => {
   return fs.readdir(dir, (err, files) => {
@@ -23,8 +23,8 @@ const clean = x => x!=='.bin';
 const program = pipe(
   read,
   // map(filter(clean)),
-  chain(redus),
+  // chain(redus),
 );
 program(BASE).subscribe({
-  next: e => console.log(' mmm files -> ', e.reduce(log('el: '), undefined))
+  next: e => console.log(e)
 });

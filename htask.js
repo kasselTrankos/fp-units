@@ -31,5 +31,9 @@ const program = pipe(
   chain(getProperty('name'))
 );
 
-const p = program('preguntame el ID: ')
-  .fork(console.log, log('ok: is: '));
+// const p = program('preguntame el ID: ')
+//   .fork(console.log, log('ok: is: '));
+
+Task.of(1)
+  .ap(Task.of(c => c + 119))
+  .fork(console.error, console.log)

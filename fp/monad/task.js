@@ -53,6 +53,8 @@ Task.prototype.ap = function(that) {
         setter(x);
         if(fLoaded && vLoaded) {
           delayed(function(){ cleanupBoth(allState) });
+          console.log(v, 'V000000000');
+          console.log(fn, 'F1111111111111')
           return resolve(fn(v));
         }else {
           return x;
@@ -60,12 +62,12 @@ Task.prototype.ap = function(that) {
       }
     }
     const _this = _thisFork(guardReject, guard(x => {
-      vLoaded = true;
-      v = x;
+      fLoaded = true;
+      fn = x; 
     }));
     const _that = _thatFork(guardReject, guard(x => {
-      fLoaded = true;
-      fn = x;      
+      vLoaded = true;
+      v = x;
     }));
     
     return allState = [_this, _that];
