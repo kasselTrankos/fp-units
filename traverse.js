@@ -10,7 +10,7 @@ const rusers = [1, 2];
 
 Array.prototype.traverse = function (T, f) {
   return this.reduce(
-    //    Here's the map bit! vvvv
+    //    Herla
     (acc, x) => lift2(append, f(x), acc),
     T.of([]))
 }
