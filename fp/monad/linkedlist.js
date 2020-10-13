@@ -25,7 +25,6 @@ LinkedList.prototype.concat = function(that) {
 
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
 LinkedList.prototype.chain = function (that) {
-  console.log(this, '-------')
   return this.cata({
     Cons: (head, tail) => LinkedList.Cons(that(head), tail.chain(that)),
     Nil: ()=> LinkedList.Nil
