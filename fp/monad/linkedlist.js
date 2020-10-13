@@ -15,13 +15,29 @@ LinkedList.empty = function() {
 // concat :: Semigroup a => a ~> a -> a
 LinkedList.prototype.concat = function(that) {
   return this.cata({
-    Cons: () => that.cata({
+    Cons: (head, tail) => that.cata({
       Cons: () =>  LinkedList.Cons(head, LinkedList.Cons(tail, that)), 
       Nil:() => this 
     }),
     Nil: () => that
   });
 }
+
+LinkedList.fromArray = function(data){
+  return data.reduceRight((acc, x) => LinkedList.Cons(x, acc), LinkedList.Nil);
+}
+
+LinkedList.prototype.toArray = function() {
+  return this.cata({
+    Cons: (x, acc) => [
+      x, ... acc.toArray()
+    ],
+
+    Nil: () => []
+  })
+}
+
+
 
 LinkedList.prototype.fromArray = function(xs) {
 
