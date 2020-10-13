@@ -31,4 +31,8 @@ const eitherToTask = either => new Task((reject, resolve)=> {
 const prop = k => o => k in o ?  Right(o[k]) : Left(' no hay datos');
 const d = {a: 1};
 eitherToTask(prop('a')(d)).fork(console.log, console.log)
+Posted on July 21, 2016
+Definition
+The Monoid pattern is simply the combination of the two patterns Identity Element and Semigroup. A monoid therefore is a datatype with composition ⊗ and element e, satisfying
+
 

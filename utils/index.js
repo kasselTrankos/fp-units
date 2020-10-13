@@ -25,7 +25,7 @@ const isDir = d => x =>
   }
 };
 
-const safeProp =  x => x ? Right(x) : Left('NO existe');
+const safeProp =  x => x ? Right(x) : Left('there is no property');
 
 
 // Either -> Task
