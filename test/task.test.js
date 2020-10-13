@@ -2,7 +2,7 @@
 const { assert } = require('chai');
 const Task = require('./../fp/monad/task')
 
-it('Task.ap :: composition', () => {
+it('Apply -> Task.ap :: composition', () => {
   const v = Task.of(c => c + 11);
   const u = Task.of(x=> x + 1);
   const a = Task.of(6)
@@ -14,7 +14,7 @@ it('Task.ap :: composition', () => {
   v.ap(u.ap(a)).fork(console.error, x => actual =x)
   assert.equal(actual, expected);
 });
-it('Task.chain :: associative', ()=> {
+it('Chain -> Task.chain :: associative', ()=> {
   const m = Task.of(1);
   const f = x => Task.of(x + 1);
   const g = x => Task.of(x + 11);
