@@ -6,6 +6,8 @@ Mantain the context, into map, ap, and chain using  a CPS next, can be maden by 
 
 Next step append stream.
 
+- LinkedList(using cata): concat, empty 
+  * exercises/link-list
 - Stream
 - Task: given test for apply and chain:
   * exercises/ask-name
