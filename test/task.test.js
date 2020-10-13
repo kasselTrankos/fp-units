@@ -1,6 +1,6 @@
 // task.test.js is
 const { assert } = require('chai');
-const Task = require('./../fp/monad/task')
+const Task = require('./../fp/monad/task');
 
 it('Apply -> Task.ap :: composition', () => {
   const v = Task.of(c => c + 11);
