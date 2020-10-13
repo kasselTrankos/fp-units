@@ -5,7 +5,7 @@ const LinkedList = daggy.taggedSum('linkedList', {
   Cons: ['head', 'tail'], Nil: []
 });
 LinkedList.of = function(head, tail) {
-  return LinkedList.Cons(head, LinkedList.Cons(tail, LinkedList.Nil))
+  return LinkedList.Cons(head, LinkedList.Cons(tail, LinkedList.empty()))
 }
 // empty :: Monoid m => () -> m 
 LinkedList.empty = function() {
@@ -25,8 +25,9 @@ LinkedList.prototype.concat = function(that) {
 
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
 LinkedList.prototype.chain = function (that) {
+  console.log(this, '-------')
   return this.cata({
-    Cons: (head, tail) => console.log(head, 't', tail, '9999') || LinkedList.Cons(that(head), tail.chain(that)),
+    Cons: (head, tail) => LinkedList.Cons(that(head), tail.chain(that)),
     Nil: ()=> LinkedList.Nil
   });
 }
