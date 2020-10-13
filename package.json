@@ -22,6 +22,8 @@
     "sanctuary-type-classes": "^12.1.0"
   },
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "chai": "^4.2.0",
+    "lerna": "^3.20.2",
+    "mocha": "^8.1.3"
   }
 }
