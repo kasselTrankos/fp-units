@@ -7,7 +7,8 @@ Mantain the context, into map, ap, and chain using  a CPS next, can be maden by 
 Next step append stream.
 
 - Stream
-- Task
+- Task: given test for apply and chain:
+  * exercises/ask-name
 - Maybe
 - Either
 - Identity
