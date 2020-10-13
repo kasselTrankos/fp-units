@@ -19,9 +19,8 @@ class Monad {
     return that(this.value);
   }
 };
-
-const d = Monad.of('./node_modules')
-
-const tm = d.map(readdirSync)
-  .chain(x => Monad.of(x.filter(g => g === '.bin')))
+const getOnly = x => g => g === x;
+Monad.of('./node_modules')
+const tm = Monad.of('./node_modules').map(readdirSync)
+  .chain(x => Monad.of(x.filter(getOnly('.bin'))))
 console.log(tm)
