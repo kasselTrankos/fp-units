@@ -1,4 +1,5 @@
 const daggy = require("daggy");
+const { fun } = require("jsverify");
 
 const LinkedList = daggy.taggedSum('linkedList', {
   Cons: ['head', 'tail'], Nil: []
@@ -40,6 +41,14 @@ LinkedList.prototype.map = function (f) {
   return this.cata({
     Cons: (head, tail) => LinkedList.Cons(f(head), tail.map(f)),
     Nil: ()=> LinkedList.Nil
+  });
+}
+
+//reduce :: Foldable f => f a ~> ((b, a) -> b, b) -> b
+LinkedList.prototype.reduce = function(f, acc) {
+  return this.cata({
+    Cons: (head, tail) => LinkedList.Cons(f(acc, head), tail.reduce(f, acc)),
+    Nil: () => LinkedList.Nil  
   });
 }
 
