@@ -4,7 +4,7 @@ const { fun } = require("jsverify");
 const LinkedList = daggy.taggedSum('linkedList', {
   Cons: ['head', 'tail'], Nil: []
 });
-LinkedList.of = function(head, tail) {
+LinkedList.of = function(head) {
   return LinkedList.Cons(head, LinkedList.empty());
 }
 // empty :: Monoid m => () -> m 
