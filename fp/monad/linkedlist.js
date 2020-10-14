@@ -1,5 +1,4 @@
 const daggy = require("daggy");
-const { fun } = require("jsverify");
 
 const LinkedList = daggy.taggedSum('linkedList', {
   Cons: ['head', 'tail'], Nil: []
@@ -33,7 +32,6 @@ LinkedList.prototype.chain = function (m) {
 
 // ap :: Apply f => f a ~> f (a -> b) -> f b
 LinkedList.prototype.ap = function(m) {
-
   return m.chain(f => this.map(f));
 }
 
@@ -58,13 +56,5 @@ LinkedList.prototype.toArray = function() {
     Nil: () => []
   })
 }
-
-
-
-LinkedList.prototype.fromArray = function(xs) {
-
-};
-
-
 
 module.exports = LinkedList;
