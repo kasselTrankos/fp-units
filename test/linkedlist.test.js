@@ -1,6 +1,7 @@
 // linkedlist.test.js is
 const { assert } = require('chai');
 const LinkedList = require('./../fp/monad/linkedlist');
+const { combineLatest } = require('rxjs');
 
 it('Monoid=> LinkedList.empty :: rigth and left identity', ()=> {
   const a = LinkedList.empty();
@@ -33,3 +34,12 @@ it('Applicative :: LinkedList.of :: identity', ()=> {
   const b = v.ap(LinkedList.of(x => x));
   assert.deepEqual(v, b); 
 });
+it('Apply :: LinkedList.ap :: composition', ()=> {
+  // v['fantasy-land/ap'](u['fantasy-land/ap'](a['fantasy-land/map'](f => g => x => f(g(x))))) 
+  // is equivalent to 
+  // v['fantasy-land/ap'](u)['fantasy-land/ap'](a) (composition)
+  const a = LinkedList.of(1).ap(LinkedList.of(x => x + 2).ap(LinkedList.of(x => x +3).map(f => g => x => f(g(x)))));
+  const b = LinkedList.of(1).ap(LinkedList.of(x => x + 2)).ap(LinkedList.of(x => x + 3));
+  assert.deepEqual(a, b); 
+});
+
