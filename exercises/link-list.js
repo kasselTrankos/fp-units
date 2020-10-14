@@ -16,5 +16,6 @@ const r = conver(xx)
 const g = a.map(x => x + 2).concat(m).concat(c).concat(e).chain((head, tail) => LinkedList.Cons(`${head}- 0`, tail.map(x=> x + 99)))
 const h = g.ap(LinkedList.of(x => x +1)).concat(LinkedList.fromArray([ 90, 99, 109])).concat(e).map(x => x + 3);
 const j = n.concat(m);
-console.log(g.toArray(), h.toArray(), r.toArray(), j.toArray())
+const vb = j.reduce((acc, x) => acc + x, 0); 
+console.log(g.toArray(), h.toArray(), r.toArray(), j.toArray(), vb.toArray(), vb)
 // 

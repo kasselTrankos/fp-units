@@ -47,8 +47,8 @@ LinkedList.prototype.map = function (f) {
 //reduce :: Foldable f => f a ~> ((b, a) -> b, b) -> b
 LinkedList.prototype.reduce = function(f, acc) {
   return this.cata({
-    Cons: (head, tail) => LinkedList.Cons(f(acc, head), tail.reduce(f, acc)),
-    Nil: () => LinkedList.Nil  
+    Cons: (head, tail) => tail.reduce(f, f(acc, head)),
+    Nil: () => LinkedList.of(acc)
   });
 }
 
