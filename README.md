@@ -6,7 +6,7 @@ Mantain the context, into map, ap, and chain using  a CPS next, can be maden by 
 
 Next step append stream.
 
-- LinkedList(using cata): Semigroup, Monoid 
+- LinkedList(using cata): Semigroup, Monoid, Chain, Apply, Applicative, Foldable
   * exercises/link-list
 - Stream
 - Task: given test for apply and chain:
