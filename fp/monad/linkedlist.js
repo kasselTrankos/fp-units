@@ -16,7 +16,7 @@ LinkedList.empty = function() {
 LinkedList.prototype.concat = function(that) {
   return this.cata({
     Cons: (head, tail) => that.cata({
-      Cons: () =>  LinkedList.Cons(head, LinkedList.Cons(tail, that)), 
+      Cons: () =>  LinkedList.Cons(head, tail.concat(that)), 
       Nil:() => this 
     }),
     Nil: () => that
