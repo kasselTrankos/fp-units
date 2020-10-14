@@ -4,8 +4,8 @@ const { fun } = require("jsverify");
 const LinkedList = daggy.taggedSum('linkedList', {
   Cons: ['head', 'tail'], Nil: []
 });
-LinkedList.of = function(head, tail) {
-  return LinkedList.Cons(head, LinkedList.Cons(tail, LinkedList.empty()))
+LinkedList.of = function(head) {
+  return LinkedList.Cons(head, LinkedList.empty())
 }
 // empty :: Monoid m => () -> m 
 LinkedList.empty = function() {
@@ -24,9 +24,19 @@ LinkedList.prototype.concat = function(that) {
 }
 
 // chain :: Chain m => m a ~> ( a -> m b) -> m b
-LinkedList.prototype.chain = function (that) {
+LinkedList.prototype.chain = function (f) {
+  const y =  this.cata({
+    Cons: f,
+    Nil: () => this
+  });
+  console.log(y, '000000000', y.toArray(), '9999999')
+  return y;
+}
+
+// map :: Functor f => a ~> (a -> b) -> b
+LinkedList.prototype.map = function (f) {
   return this.cata({
-    Cons: (head, tail) => LinkedList.Cons(that(head), tail.chain(that)),
+    Cons: (head, tail) => LinkedList.Cons(f(head), tail.map(f)),
     Nil: ()=> LinkedList.Nil
   });
 }
