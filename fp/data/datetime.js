@@ -1,6 +1,8 @@
-function datetime(d) {
-  this.value = d
-}
+const daggy = require('daggy');
+const datetime = daggy.tagged('datetime', ['d']);
+
+
+
 
 datetime.prototype.equals = function(that) {
   return this.value.getTime() === that.getTime();
@@ -11,7 +13,7 @@ datetime.prototype.lte = function (that) {
 };
 //map:: Functor f => f a ~> (a->b) -> b 
 datetime.prototype.map = function (f) {
-  return datetime.of(f(this.value));
+  return datetime(f(this.d));
 };
 
 // Apply :: f => f a ~> f (a -> b) -> f b
@@ -26,19 +28,14 @@ datetime.prototype.concat = function(b) {
 
 // chain :: Chain m =>  m a ~> ( a -> m b) -> m b
 datetime.prototype.chain = function(f) {
-  return datetime.of(this.map(f)).value;
+  console.log(f, '00000');
+  return f(this.x)
 }
 //of :: Aplicative f => f a ~> f -> a -> a
-datetime.of = function (d) {
-  return new datetime(new Date(new Date(d).getTime()));
+datetime.of = function (a) {
+  return datetime(new Date(a));
 };
 
-// from :: f => f a ~> a -> a 
-datetime.from = function(d) {
-  const value = d instanceof Date ? new Date(d.getTime()) 
-    : d instanceof datetime ? new Date(d.value.getTime()) :  new Date(d);
-  return datetime.of(value);
-};
 
 
 

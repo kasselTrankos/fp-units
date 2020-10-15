@@ -1,6 +1,7 @@
 var delayed = typeof setImmediate !== 'undefined'?  setImmediate
             : typeof process !== 'undefined'?       process.nextTick
             : /* otherwise */                       setTimeout
+
 function Task(computation, complete) {
   this.fork = computation;
   this.cleanup = complete || function() {};

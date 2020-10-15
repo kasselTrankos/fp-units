@@ -1,5 +1,4 @@
 const daggy = require("daggy");
-const { fun } = require("jsverify");
 
 const LinkedList = daggy.taggedSum('linkedList', {
   Cons: ['head', 'tail'], Nil: []
