@@ -119,7 +119,7 @@ Stream.empty = function() {
 }
 
 // from :: Stream ~> [a] ~> Stream a
-Stream.from = function(xs) {
+Stream.fromArray = function(xs) {
   return new Stream(stream => {
     for(let x of xs){
       stream.next(x);

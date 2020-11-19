@@ -18,21 +18,26 @@ const getByID= id => new Stream(({next, complete, error})=> {
   return ()=> {_continue = false;}
 });
 const timer = d => new Stream(({next, complete, error})=> {
-  const {author, delay} = d
-  const t = setTimeout(()=> complete() || next(d), delay);
+  const delay = 900;
+  const t = setTimeout(()=> {
+    console.log(d, '00000')
+    if(d === 2000) complete();
+    return complete() || next(d)
+  }, delay + d);
   return ()=> clearInterval(t); // un sub
 });
 
 
 const program = pipe(
-  Stream.from,
-  chain(getByID),
+  Stream.fromArray,
+  // chain(getByID),
   chain(timer)
 );
 
-const _unbsus = program([1, 2, 3, 4,5,6])
+const _unbsus = program([1000, 2000, 3000])
 .subscribe({
   next: a => console.log('NEXT: ', a, new Date()),//console.log('next--->', a),
   complete: () =>  console.log('completeTTT', new Date()),
   error: e => console.log(e, '< get - tjs---errror'),
 });
+// console.log(_unbsus())

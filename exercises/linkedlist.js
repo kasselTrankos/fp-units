@@ -19,7 +19,7 @@ seq(12).reduce(log('SEQ RUNNIG: ', undefined))
 // chain
 const _ch = x => {
   const [car, cdr] = x;
-  return LinkedList.of(90, LinkedList.of(car, cdr))
+  return LinkedList.of(car + 1, LinkedList.of(car, cdr))
 }
 const _c = x => {
   const [car, cdr] = x;
@@ -34,4 +34,7 @@ console.log('===================')
 // is equivalent to m['fantasy-land/chain'](x => f(x)['fantasy-land/chain'](g)) 
 // chain(composeK(f, g))(m)
 chain (composeK (_c, _ch)) (LinkedList.from([1, 2, 3])).reduce(log(`Associative compose ${new Date().getTime()} : `), undefined);
+
+const jj = LinkedList.from([1, 2, 3])
+console.log(jj.chain(_ch))
 
