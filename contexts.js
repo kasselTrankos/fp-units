@@ -20,9 +20,8 @@ const getByID= id => new Stream(({next, complete, error})=> {
 const timer = d => new Stream(({next, complete, error})=> {
   const delay = 900;
   const t = setTimeout(()=> {
-    console.log(d, '00000')
-    if(d === 2000) complete();
-    return complete() || next(d)
+    if(d >1300) complete();
+    return next(d)
   }, delay + d);
   return ()=> clearInterval(t); // un sub
 });
@@ -34,7 +33,7 @@ const program = pipe(
   chain(timer)
 );
 
-const _unbsus = program([1000, 2000, 3000])
+const _unbsus = program([1000, 1100, 1400, 1700])
 .subscribe({
   next: a => console.log('NEXT: ', a, new Date()),//console.log('next--->', a),
   complete: () =>  console.log('completeTTT', new Date()),
