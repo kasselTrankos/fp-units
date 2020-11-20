@@ -12,7 +12,7 @@ function run ({next, complete, error}) {
     },
     complete: () => {
       completed = true;
-      return complete() || noop()
+      return complete() || noop() 
     },
     error: error || noop
   });

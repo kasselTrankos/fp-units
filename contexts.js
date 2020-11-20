@@ -27,17 +27,23 @@ const timer = d => new Stream(({next, complete, error})=> {
 });
 
 
+
+
 const program = pipe(
   Stream.fromArray,
   // chain(getByID),
   chain(timer)
 );
 
-const _unbsus = program([1000, 1100, 1400, 1700, 2100, 2200, 2490])
+const _unbsus = timer(1000)
+// program([1000, 1100, 1400, 1700, 2100, 2200, 2490])
 .subscribe({
   next: a => console.log('NEXT: ', a, new Date()),//console.log('next--->', a),
   complete: () =>  console.log('completeTTT', new Date()),
   error: e => console.log(e, '< get - tjs---errror'),
 });
-setTimeout(()=>_unbsus(), 2600);
+setTimeout(()=>{
+  console.log('break it')
+  _unbsus()
+}, 600);
 // console.log(_unbsus())
