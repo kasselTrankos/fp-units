@@ -1,7 +1,7 @@
 const {Task} = require('./../fp/monad');
 const request = require('request');
 const {Right, Left} = require('./../fp/monad/either');
-const {liftM} = require('./../utils');
+const {liftN} = require('./../utils');
 
 
 const T  = id => new Task((reject, resolve)=> request(
@@ -20,7 +20,7 @@ const eitherToTask = x => new Task((reject, resolve)=> {
 
 
 console.log(new Date());
-liftM(x => y => z => [x, y, z],
+liftN(x => y => z => [x, y, z],
   TT(2000),TT(1000), TT(1000))
   .fork(
   (error) => { console.log('something went wrong') },
