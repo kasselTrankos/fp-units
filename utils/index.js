@@ -1,8 +1,9 @@
 const {Left, Right} = require('./../fp/monad/either');
 const Task = require('./../fp/monad/task');
-const liftM = (f, ...args)=> {
+
+const liftN = (f, ...args)=> {
   const [head, ...tail] = args;
-  return tail.reduce((acc, curr)=> curr.ap(acc), head.map(f))
+  return tail.reduce((acc, x)=> x.ap(acc), head.map(f))
 };
 const curryN = (n, f) => {
   return function curried (...args) {
@@ -52,5 +53,5 @@ const log = curry((msg, val)=> console.log(msg, val));
 
 
 
-module.exports = {liftM, curry, map, chain, pipe, 
+module.exports = {liftN, curry, map, chain, pipe, 
   prop, getProperty, safeProp, log, ap, filter}

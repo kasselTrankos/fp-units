@@ -61,12 +61,12 @@ Task.prototype.ap = function(that) {
       }
     }
     const _this = _thisFork(guardReject, guard(x => {
-      fLoaded = true;
-      fn = x; 
-    }));
-    const _that = _thatFork(guardReject, guard(x => {
       vLoaded = true;
       v = x;
+    }));
+    const _that = _thatFork(guardReject, guard(x => {
+      fLoaded = true;
+      fn = x; 
     }));
     
     return allState = [_this, _that];
@@ -95,19 +95,12 @@ Task.prototype.or = function(that) {
         resolve(value);
       }
     };
-
-
     _thisFork(this.reject, guard(cleanupThat));
     _thatFork(that.reject, guard(cleanupThis));
-    
-
   }, () => {
     cleanupThis();
     cleanupThat();
   });
-
-
-
 }
 
 module.exports = Task;
