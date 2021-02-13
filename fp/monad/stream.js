@@ -1,47 +1,126 @@
-const noop = () => {};
-let completed = false;
+const noop = () => { };
+
+const prototype = {
+  'fantasy-land/map': stream$map,
+  'map': stream$map,
+  'fantasy-land/chain': stream$chain,
+  'fantasy-land/concat': stream$concat,
+  'concat': stream$concat,
+  'chain': stream$chain,
+  'join': stream$join,
+  'subscribe': stream$subscribe,
+  'fantassy-land/ap': stream$ap,
+  'ap': stream$ap,
+  'concatMap': stream$concat$map,
+  'merge': stream$merge,
+  'mergeMap': stream$merge$map
+
+}
 function Stream(constructor) {
-  this._constructor = constructor;
-  this.completed = false;
+  const stream = Object.create(prototype)
+
+  stream._constructor = constructor
+  return stream
 }
 
-function run ({next, complete, error}) {
+function run({ next, complete, error }) {
   return this._constructor({
-    next: x =>  {
-      return !completed && next(x) || noop();
-    },
-    complete: () => {
-      completed = true;
-      return complete() || noop() 
-    },
+    next: next || noop,
+    complete: complete || noop,
     error: error || noop
   });
-} 
+}
 
-Stream.prototype.subscribe = function(o) {
+function stream$subscribe(o) {
   return run.call(this, o);
 }
 
 // of :: Aplicative f => f ~> a -> f a
-Stream.of = function(x) {
-  return new Stream(({next}) =>{
-    next(x);
-    return ()=> {} // unsubs
-  });
+Stream.of = function (x) {
+  return Stream(({ next, complete }) => {
+    next(x)
+    complete()
+    return noop
+  })
 }
 
 // ap :: Apply f => f a ~> f(a -> b) -> f b
 /// using a derivation of ap using m => m.chain(f => this.map(f))
-Stream.prototype.ap = function(that) {
+function stream$ap(that) {
   return that.chain(f => this.map(f));
 }
 
+// concatMap :: 
+// helper 
+function stream$concat$map (f) {
+  return this.chain(([head, ...tail]) => tail.reduce((acc, x) => acc.concat(f(x)), f(head)) )
+}
+
+// fantasy-land/concat :: Semigroup a => a ~> a -> a
+function stream$concat(that) {
+  return Stream(observer => {
+    let completeThis = false
+    let completeThat = false;
+    const completeBoth = () => completeThis && completeThat && observer.complete()
+    const unsuscribeThis = this.subscribe({
+      next: x => {
+        observer.next(x)
+      },
+      complete: ()=> {
+        const unsuscribeThat = that.subscribe({
+            next: x => {
+              observer.next(x)
+              observer.complete()
+            },
+          })
+        return () => unsubscribeThat()
+      },
+    })
+    return ()=> {
+      // unsubscribeThat()
+      unsuscribeThis()
+    }
+  })
+}
+function stream$merge$map(f) {
+  return this.chain(([head, ...tail]) => tail.reduce((acc, x) => acc.merge(f(x)), f(head)) )
+}
+
+// fantasy-land/concat :: Semigroup a => a ~> a -> a
+function stream$merge(that) {
+  return Stream(observer => {
+    let completeThis = false
+    let completeThat = false;
+    const completeBoth = () => completeThis && completeThat && observer.complete()
+    const unsuscribeThis = this.subscribe({
+      next: x => observer.next(x),
+      complete: ()=> {
+        completeThis = true
+        completeBoth()
+      },
+      error: observer.error,
+    })
+    const unsubscribeThat = that.subscribe({
+      next: x => observer.next(x),
+      complete: ()=> {
+        completeThat = true
+        completeBoth()
+      },
+      error: observer.error
+    })
+    return ()=> {
+      unsubscribeThat()
+      unsuscribeThis()
+    }
+  })
+}
+
 // filter :: Filterable f => f a ~> (a -> Boolean ) -> f a
-Stream.prototype.filter = function(f) {
+Stream.prototype.filter = function (f) {
   return new Stream(stream => {
     this.subscribe({
       next: x => {
-        if(f(x)) stream.next(x);
+        if (f(x)) stream.next(x);
       },
       complete: stream.complete,
       error: stream.error
@@ -49,90 +128,93 @@ Stream.prototype.filter = function(f) {
   });
 }
 
-// flatmap :: f => f a ~> [...a] -> a a a ...
-// flatmap _ [] = []  
-// flatmap f (x:xs) = f x ++ flatmap f xs
-Stream.prototype.flatmap = function(f) {
-  
-  return new Stream(handler=> this.subscribe({
-    next: x=> {
-      return x.map(v => this.subscribe({
-      next: handler.next(f(v)),
-      error: handler.error,
-      complete: handler.complete
-    }))
-  }
-    
-  }));
+// fantasy-land/chain :: Chain m => m a ~> (a -> m b) -> m b
+function stream$chain(m) {
+  // metdo
+  return Stream(observer => {
+    const cancel = this.subscribe({
+      next: x => {
+         m(x).subscribe({
+            next: x => {
+              observer.next(x)
+            },
+            complete: observer.complete
+          })
+          return ()=> {}
+      },
+      error: observer.error
+    })
+    return ()=> {}
+  })
 }
-// chain :: Chain m => m a ~> ( a -> m b) -> m b
-Stream.prototype.chain = function(m) {
-  return this.map(m).join();
-}
-// join :: Stream (Stream a) ~> Stream a
-Stream.prototype.join = function() {
+
+// join :: Chain m => m (m a) -> m a
+// https://github.com/sanctuary-js/sanctuary/blob/v3.1.0/index.js#L1500
+//  Removes one level of nesting from a nested monadic structure.
+function stream$join() {
   let streams = 0;
   let completes = 0;
   const subs = [];
-
-  return new Stream(observer => {
-    const _stream = this.subscribe({
+  let insideStream = () => {}
+  return Stream(observer => {
+    // first level stream
+    const outsideStream = this.subscribe({
+      // next
       next: stream => {
-        streams++;
-        const __stream = stream.subscribe({
+        // streams++;
+        /// level inside first level
+        insideStream = stream.subscribe({
           next: value => {
-            observer.next(value);
-            if(streams === completes){
-              observer.complete();
-            }
+            console.log(value, 'ruifuffhfhfhfh')
+            observer.next(value)
+            observer.complete()
+            // if (streams === completes) {
+            //   observer.complete();
+            // }
           },
-          complete: () => {
-            completes++;
-          },
-          error: observer.error
+          complete: observer.complete
+          // complete: () => {
+          //   completes++;
+          //   if (completes === streams) {
+          //     observer.complete();
+          //   }
+          // },
+          // error: observer.error
         });
-        subs.push(__stream);
+        // subs.push(insideStream);
       },
-      complete: () => {
-        if(completes === streams){
-          observer.complete();
-        }
-      }, 
+      // complete
+      // complete: observer.complete,
+      //error
       error: e => observer.error(e)
     }
-  );
-  return ()=> {
-    _stream();
-    // this is a techique to no run second stream untill is created. so [undefined]
-    // then no run anything
-    subs.forEach(unsus => unsus())
-  }
-});
+    );
+    return () => {
+      outsideStream();
+      insideStream()
+      // subs.forEach(unsus => unsus())
+    }
+  });
 }
 
 
 // map :: Functor f => f a ~> (a -> b) -> f b
-Stream.prototype.map = function(f) {
-  return new Stream( handler => this.subscribe({
+function stream$map(f) {
+  return Stream(handler => this.subscribe({
     next: x => handler.next(f(x)),
-    complete: () => handler.complete(), // void, by definition you no must do nothing at this point
-    error: x =>  handler.error(x) //
+    complete: handler.complete, // void, by definition you no must do nothing at this point
+    error: handler.error //
   }));
 }
 
-// empty :: Semigroup a => a ~> a -> () -> a
-Stream.empty = function() {
-  return new Stream(handler => handler.next())
-}
-
 // from :: Stream ~> [a] ~> Stream a
-Stream.fromArray = function(xs) {
+Stream.from = function (xs) {
   return new Stream(stream => {
-    for(let x of xs){
+    for (let x of xs) {
       stream.next(x);
     }
-    // stream.complete();
-    return ()=> {}// unsubs
+    stream.complete();
+    return () => { }// unsubs
   });
 }
 
